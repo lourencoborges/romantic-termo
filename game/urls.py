@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path("api/partida/", views.game_state, name="game_state"),
-    path("api/chute/", views.submit_guess, name="submit_guess"),
+    path("api/sync/", views.sync_words, name="sync_words"),
+    path("service-worker.js", views.service_worker, name="service_worker"),
 ]

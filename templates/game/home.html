@@ -5,6 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#715e63">
+  <meta name="description" content="Um desafio diário de palavras, feito com amor.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Palavras de Amor">
+  <link rel="manifest" href="{% static 'game/manifest.webmanifest' %}">
+  <link rel="icon" href="{% static 'game/icon.svg' %}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{% static 'game/icon-192.png' %}">
   <title>Palavras de Amor</title>
   <link rel="stylesheet" href="{% static 'game/style.css' %}">
   <script src="{% static 'game/game.js' %}" defer></script>
@@ -12,16 +18,16 @@
 <body>
   <header class="mode-bar">
     <nav id="levels" aria-label="Modo de jogo" class="mode-tabs"></nav>
-    <a href="/admin/" class="admin-link" aria-label="Área de edição" title="Área de edição">⚙</a>
+    <div class="header-actions"><button id="install-button" class="install-button" hidden>Instalar</button><a href="/admin/" class="admin-link" aria-label="Área de edição" title="Área de edição">⚙</a></div>
   </header>
   <main class="game-shell">
-    <div class="game-toolbar"><button id="help" class="icon-button" aria-label="Como jogar" title="Como jogar">?</button><div class="toolbar-title"><span class="heart">♥</span><span id="stage-title">TERMO</span></div><div class="toolbar-icons"><span aria-hidden="true">▥</span><span aria-hidden="true">♥</span></div></div>
+    <div class="game-toolbar"><button id="help" class="icon-button" aria-label="Como jogar" title="Como jogar">?</button><div class="toolbar-title"><span class="heart">♥</span><span id="stage-title">TERMO</span></div><div id="sync-status" class="sync-status" role="status" aria-live="polite">Carregando…</div></div>
     <div class="daily-badge" id="daily-badge">PALAVRAS DE AMOR</div>
     <p id="message" class="message" role="status" aria-live="polite"></p>
     <section class="board-wrap" id="board-wrap" aria-label="Tabuleiro"><div id="boards"></div></section>
     <div id="keyboard" class="keyboard" aria-label="Teclado virtual"></div>
     <p class="hint">Adivinhe a palavra em até 6 tentativas</p>
   </main>
-  <div id="help-dialog" class="dialog-backdrop" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="help-title"><button id="close-help" class="close-help" aria-label="Fechar">×</button><h2 id="help-title">Como jogar</h2><p>Descubra a palavra em até seis tentativas. Cada tentativa precisa ter cinco letras.</p><p class="example"><b class="correct">A</b> letra certa no lugar certo</p><p class="example"><b class="present">M</b> letra certa no lugar errado</p><p class="example"><b class="absent">O</b> letra que não aparece</p><p>O desafio tem três etapas: uma palavra, depois duas e por fim quatro. Um novo desafio chega amanhã. ♥</p></section></div>
+  <div id="help-dialog" class="dialog-backdrop" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="help-title"><button id="close-help" class="close-help" aria-label="Fechar">×</button><h2 id="help-title">Como jogar</h2><p>Descubra a palavra em até seis tentativas. Cada tentativa precisa ter cinco letras.</p><p class="example"><b class="correct">A</b> letra certa no lugar certo</p><p class="example"><b class="present">M</b> letra certa no lugar errado</p><p class="example"><b class="absent">O</b> letra que não aparece</p><p>O desafio tem três etapas: uma palavra, depois duas e por fim quatro. Conecte-se para sincronizar palavras novas; as palavras salvas e seu progresso continuam disponíveis offline. ♥</p></section></div>
 </body>
 </html>
