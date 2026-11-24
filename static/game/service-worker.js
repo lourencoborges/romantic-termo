@@ -1,4 +1,4 @@
-const CACHE_NAME = "palavras-amor-v1";
+const CACHE_NAME = "palavras-amor-v2";
 const APP_SHELL = [
   "/",
   "/static/game/manifest.webmanifest",

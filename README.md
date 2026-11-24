@@ -1,6 +1,6 @@
 # Palavras de Amor
 
-Jogo diário inspirado no Termo, com a lista pessoal de palavras administrada em Django. A interface é uma PWA: depois de aberta com internet e sincronizada, pode ser instalada e usada sem conexão.
+Jogo web diário inspirado no Termo, feito para abrir direto no navegador do computador ou do celular. A experiência web é a versão principal; não precisa instalar nada para jogar. A instalação PWA é opcional e mantém o jogo disponível na tela inicial e offline. O projeto não inclui APK nativo neste momento, então você pode evoluir esse empacotamento depois sem deixar de usar o mesmo jogo web.
 
 ## Como funciona
 
@@ -34,7 +34,7 @@ Abra <http://127.0.0.1:8000/> para jogar e <http://127.0.0.1:8000/admin/> para a
 3. Abra o app instalado enquanto estiver online para baixar a lista. Depois disso, os desafios e o progresso ficam disponíveis sem internet.
 4. Quando você adicionar palavras no admin, abra o app novamente com internet (Wi-Fi ou outra conexão) para atualizar a cópia local.
 
-A instalação como PWA funciona em celular e desktop. Ela não cria por si só um arquivo APK; o APK Android pode ser empacotado depois usando a mesma versão web.
+A instalação como PWA funciona em celular e desktop, mas é opcional: basta abrir o endereço no navegador para jogar. Ela não cria por si só um arquivo APK; o APK Android pode ser empacotado depois usando a mesma versão web.
 
 ## Adicionar as palavras pessoais
 
@@ -78,7 +78,7 @@ game/urls.py         Rotas Django
 game/management/     Importação da lista CSV
 templates/game/      Estrutura HTML da PWA
 static/game/game.js  Regras locais, teclado e progresso offline
-static/game/style.css Estilos da interface
+static/game/style.css Estilos adaptáveis para computador e celular
 static/game/service-worker.js Cache dos arquivos para abrir sem internet
 static/game/manifest.webmanifest Nome, ícones e modo de instalação
 ```
