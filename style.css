@@ -46,16 +46,11 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .brand-name { font-family: Georgia, "Times New Roman", serif; font-size: 16px; letter-spacing: .015em; }
 .brand-name b { color: var(--rose-light); font-weight: 400; font-style: italic; }
 .header-tools { display: flex; align-items: center; gap: 14px; }
-.connection { display: inline-flex; align-items: center; gap: 0; color: #bca7b0; font-size: 9px; font-weight: 750; letter-spacing: .12em; }
 .help-button { width: 31px; height: 31px; border: 1px solid #866978; border-radius: 50%; background: #ffffff06; color: var(--rose-light); font-weight: 700; cursor: pointer; touch-action: manipulation; }
 .install-button { border: 1px solid #956c7b; border-radius: 99px; padding: 7px 12px; background: #462d3a; color: var(--cream); font-size: 11px; font-weight: 700; cursor: pointer; }
 .app-shell { width: min(100% - 32px, 540px); margin: 0 auto; }
 .intro { padding: 38px 0 26px; text-align: center; }
-.eyebrow { margin: 0 0 13px; color: var(--gold); font-size: 9px; font-weight: 800; letter-spacing: .22em; }
-.eyebrow span { margin-right: 6px; color: var(--rose); font-size: 13px; }
 h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 7vw, 49px); font-weight: 400; line-height: 1.08; letter-spacing: -.045em; }
-.intro-copy { margin: 13px 0 15px; color: #d6c4cb; font-family: Georgia, "Times New Roman", serif; font-size: 14px; line-height: 1.6; }
-.mobile-break { display: none; }
 .date-line { display: inline-flex; align-items: center; gap: 8px; color: var(--rose-light); font-size: 9px; font-weight: 800; letter-spacing: .13em; }
 .date-flower { color: var(--rose); font-size: 15px; }
 .game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 1px solid #ebadc11d; border-radius: 22px; background: linear-gradient(150deg, #2a1b25f2, #21151dea); box-shadow: 0 18px 55px #09060a66, inset 0 1px #ffffff08; }
@@ -120,11 +115,8 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
   .brand-mark { width: 30px; height: 30px; }
   .brand-name { font-size: 14px; }
   .header-tools { gap: 10px; }
-  .connection { font-size: 8px; letter-spacing: .08em; }
   .app-shell { width: calc(100% - 24px); }
   .intro { padding: 31px 0 21px; }
-  .intro-copy { margin: 10px 0 12px; font-size: 13px; }
-  .mobile-break { display: initial; }
   .desktop-break { display: none; }
   .game-card { border-radius: 18px; padding: 14px 11px 15px; }
   .game-card-top { padding-bottom: 11px; }

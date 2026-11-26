@@ -59,7 +59,6 @@ const progressEl = document.querySelector("#challenge-progress");
 const noteEl = document.querySelector("#love-note");
 const noteTextEl = document.querySelector("#love-note-text");
 const shareRowEl = document.querySelector("#share-row");
-const connectionLabelEl = document.querySelector("#connection-label");
 const helpDialog = document.querySelector("#help-dialog");
 const installButton = document.querySelector("#install-button");
 let game;
@@ -96,12 +95,8 @@ function readSavedGame(date) {
 }
 
 function saveGame() {
-  try {
-    localStorage.setItem(progressKey(game.date), JSON.stringify(game));
-    connectionLabelEl.textContent = navigator.onLine ? "SALVO NO SEU APARELHO" : "JOGANDO OFFLINE";
-  } catch (_) {
-    connectionLabelEl.textContent = "PROGRESSO TEMPORÁRIO";
-  }
+  try { localStorage.setItem(progressKey(game.date), JSON.stringify(game)); }
+  catch (_) { /* O jogo continua nesta sessão se o navegador bloquear o armazenamento. */ }
 }
 
 function createGame(date) {
@@ -313,11 +308,6 @@ function newDayIfNeeded() {
   render();
 }
 
-function updateConnection() {
-  const online = navigator.onLine;
-  connectionLabelEl.textContent = online ? "PRONTO PRA JOGAR" : "JOGANDO OFFLINE";
-}
-
 function shareResult() {
   const blocks = game.levels.map((level, levelIndex) => {
     const name = LEVELS[levelIndex].label;
@@ -351,8 +341,6 @@ document.querySelector("#close-help").addEventListener("click", closeHelp);
 document.querySelector("#got-it").addEventListener("click", closeHelp);
 helpDialog.addEventListener("click", event => { if (event.target === helpDialog) closeHelp(); });
 document.querySelector("#share-button").addEventListener("click", shareResult);
-window.addEventListener("online", updateConnection);
-window.addEventListener("offline", updateConnection);
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   installPrompt = event;
@@ -375,7 +363,6 @@ function start() {
   document.querySelector("#today-label").textContent = new Intl.DateTimeFormat("pt-BR", {
     timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long"
   }).format(new Date()).toLocaleUpperCase("pt-BR");
-  updateConnection();
   render();
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js").catch(() => {});
   window.setInterval(newDayIfNeeded, 30000);
