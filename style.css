@@ -76,10 +76,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .key.wide { flex: 1.7 1 0; max-width: 68px; color: #e7cbd4; font-size: 9px; letter-spacing: .025em; }
 .key:active { transform: translateY(1px) scale(.97); box-shadow: 0 1px 0 #100a0f; }
 .keyboard-hint { margin: 10px 0 0; color: #8f7c86; font-size: 9px; text-align: center; }
-.love-note { display: flex; gap: 13px; align-items: flex-start; margin: 18px 0 0; padding: 14px 15px; border: 1px solid #d6819a2b; border-radius: 13px; background: linear-gradient(135deg, #57334366, #3c29354f); text-align: left; animation: note-in .35s ease-out both; }
-.note-icon { display: grid; flex: 0 0 31px; width: 31px; height: 31px; place-items: center; border-radius: 50%; background: #db829b20; color: var(--rose-light); font-size: 18px; }
-.note-kicker { margin: 1px 0 5px; color: var(--gold); font-size: 8px; font-weight: 850; letter-spacing: .15em; }
-.note-text { margin: 0; color: #f3e1e5; font-family: Georgia, "Times New Roman", serif; font-size: 13px; line-height: 1.55; }
+.love-note { margin: 18px 0 0; padding: 0; border: 0; background: transparent; color: #f3e1e5; text-align: center; animation: note-in .35s ease-out both; }
+.note-kicker { margin: 1px 0 5px; color: inherit; font-size: 8px; font-weight: 850; letter-spacing: .15em; }
+.note-text { margin: 0; color: inherit; font-family: Georgia, "Times New Roman", serif; font-size: 13px; line-height: 1.55; }
 .share-row { margin-top: 12px; text-align: center; }
 .share-button { padding: 9px 14px; border: 1px solid #9f7483; border-radius: 99px; background: #4a303d; color: #fbe8ed; font-size: 10px; font-weight: 750; cursor: pointer; touch-action: manipulation; }
 .share-button span { margin-right: 5px; color: var(--rose-light); }

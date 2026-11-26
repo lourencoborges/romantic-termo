@@ -1,6 +1,6 @@
-const START_DATE = "2026-10-11";
 const MAX_GUESSES = 6;
 const STORAGE_PREFIX = "palavras-de-amor:";
+const WORD_CYCLE_KEY = `${STORAGE_PREFIX}word-cycle:v1`;
 const WORDS = [
   { word: "AMORA", note: "Você deixa qualquer dia mais doce só por existir. Meu amor por você floresce em cada detalhe." },
   { word: "BEIJO", note: "Ainda escolheria o seu beijo no meio de qualquer multidão. E escolheria de novo, todos os dias." },
@@ -14,17 +14,14 @@ const WORDS = [
   { word: "LUGAR", note: "Meu lugar preferido não é um endereço. É onde você está." },
   { word: "MUNDO", note: "O mundo fica enorme, mas cabe inteirinho no espaço seguro do seu abraço." },
   { word: "TEMPO", note: "O tempo passa depressa quando estamos juntos. Tomara que a vida tenha muito dele pra nós." },
-  { word: "DANCA", note: "Mesmo sem música, meu coração sempre encontra um jeito de dançar com você." },
   { word: "ALMAS", note: "Gosto de imaginar que nossas almas se reconheceram antes mesmo de a gente se conhecer." },
   { word: "UNIAO", note: "Que a gente continue sendo time, abrigo e torcida um do outro, em todos os capítulos." },
   { word: "OLHAR", note: "Às vezes um olhar seu diz tudo aquilo que eu ainda nem consegui colocar em palavras." },
   { word: "AFETO", note: "Amar você também mora nas coisas pequenas: cuidar, escutar, lembrar e ficar." },
   { word: "BRISA", note: "Você chega leve, como uma brisa boa, e muda o clima inteiro do meu dia." },
-  { word: "FESTA", note: "Qualquer momento simples vira comemoração quando posso dividir com você." },
   { word: "LACOS", note: "Os nossos laços são feitos de carinho, parceria e de tantas lembranças que ainda vamos criar." },
   { word: "FELIZ", note: "Se me perguntarem o que me faz feliz, vou sorrir antes mesmo de responder: você." },
   { word: "ADORO", note: "Adoro seu jeito, suas ideias, suas manias e a pessoa bonita que você é por inteiro." },
-  { word: "TANTO", note: "Eu te amo tanto que até as palavras de cinco letras ficam pequenas para contar." },
   { word: "CASAL", note: "Gosto de nós: das nossas diferenças, da nossa parceria e de tudo que construímos juntos." },
   { word: "PEITO", note: "É no peito que guardo sua voz, seu abraço e a paz gostosa de saber que tenho você." },
   { word: "SORTE", note: "Se amar você é sorte, eu ganhei a loteria mais bonita da vida." },
@@ -38,11 +35,73 @@ const WORDS = [
   { word: "PARES", note: "A gente não precisa ser igual para combinar. Gosto do jeito que nossas diferenças fazem par." },
   { word: "LEAIS", note: "Que a gente siga leal ao que sente, ao que promete e ao cuidado que tem um pelo outro." },
   { word: "VOTOS", note: "Meu voto de hoje é simples: continuar escolhendo você, com amor, em todos os dias possíveis." },
-  { word: "GEMAS", note: "As melhores preciosidades da minha vida não brilham numa caixa. Uma delas está lendo isto." },
-  { word: "PRADO", note: "Quero caminhar com você por todos os jardins que a vida ainda tem para a gente." },
   { word: "AROMA", note: "Tem lembrança sua que chega de mansinho e perfuma meu dia inteiro." },
   { word: "AMADA", note: "Que você nunca se esqueça: é muito amada, exatamente assim, em todos os seus jeitos." },
-  { word: "GRATA", note: "Sou grato por cada conversa, cada abraço e por você ter cruzado o meu caminho." }
+  { word: "GRATA", note: "Sou grato por cada conversa, cada abraço e por você ter cruzado o meu caminho." },
+  { word: "LAZER", note: "Lazer é tempo para descansar e aproveitar a vida. Quero que muitos dos nossos momentos bons sejam assim: leves e juntos." },
+  { word: "AFAGO", note: "Afago é um carinho delicado. Quero que você encontre um pouco desse cuidado em cada palavra minha." },
+  { word: "AMIGA", note: "Antes de qualquer romance, gosto de poder chamar você de minha amiga e contar com a sua companhia." },
+  { word: "AMIGO", note: "Quero ser seu amor e também seu amigo: alguém com quem você possa rir, conversar e contar." },
+  { word: "ANJOS", note: "Anjos lembram proteção e cuidado. Você tem um jeito especial de trazer os dois para a minha vida." },
+  { word: "APEGO", note: "Apego é o carinho que cria raízes. O meu por você cresce em cada conversa e abraço." },
+  { word: "APOIO", note: "Apoio é estar junto quando tudo vai bem e quando pesa. Quero que você sempre saiba que pode contar comigo." },
+  { word: "BAILE", note: "Baile é festa com música e dança. Mesmo sem pista, qualquer momento com você já me dá vontade de comemorar." },
+  { word: "BELAS", note: "Há coisas belas no mundo, mas nenhuma me encanta tanto quanto o seu jeito de ser." },
+  { word: "BELOS", note: "Os dias ficam mais belos quando têm sua voz, seu sorriso ou simplesmente você por perto." },
+  { word: "BOCAS", note: "Entre todas as conversas e sorrisos, a sua boca guarda o beijo que eu escolheria sempre." },
+  { word: "BRACO", note: "No seu braço encontro carinho e aconchego. É um lugar simples que faz meu coração descansar." },
+  { word: "CHUVA", note: "Até os dias de chuva ficam bons quando posso dividir o cobertor, a conversa e o tempo com você." },
+  { word: "CORPO", note: "Gosto de você por inteiro: do seu corpo, da sua história e de tudo que faz você ser única." },
+  { word: "DENGO", note: "Dengo é carinho cheio de mimo. Adoro quando a gente se cuida desse jeitinho tão nosso." },
+  { word: "DEUSA", note: "Deusa é como me parece quando você brilha sendo exatamente quem é: forte, linda e inteira." },
+  { word: "DOIDA", note: "Até nossas ideias mais doidas viram lembranças boas quando estamos juntos." },
+  { word: "FALTA", note: "Quando você não está, sua falta me lembra o quanto sua presença deixa meus dias melhores." },
+  { word: "FAVOR", note: "Meu favor preferido é simples: ficar mais um pouquinho ao seu lado." },
+  { word: "FICAR", note: "Ficar é escolher presença. Eu gosto de ficar com você, nas conversas longas e nos silêncios bons." },
+  { word: "FLORA", note: "Flora lembra flores e vida crescendo. Nosso amor também floresce quando a gente cuida dele." },
+  { word: "FORTE", note: "Você é forte até nos dias em que duvida disso. Quero estar perto para lembrar o quanto admiro você." },
+  { word: "FOTOS", note: "Gosto das nossas fotos porque elas guardam instantes que meu coração queria poder repetir." },
+  { word: "GOSTO", note: "Gosto de você nos detalhes: no jeito de falar, nas manias e em tudo que só você tem." },
+  { word: "HUMOR", note: "Seu humor e suas brincadeiras conseguem mudar meu dia. Adoro rir com você." },
+  { word: "JOVEM", note: "Quero que a gente mantenha jovem essa alegria de descobrir coisas novas lado a lado." },
+  { word: "LEITO", note: "Leito é lugar de descanso. Depois de um dia longo, penso no conforto de terminar perto de você." },
+  { word: "MEIGA", note: "Seu jeito meigo aparece nos gestos pequenos e faz meu carinho por você crescer ainda mais." },
+  { word: "MEIGO", note: "Tem algo meigo no seu jeito de cuidar, olhar e falar comigo. Eu guardo cada detalhe." },
+  { word: "MIMOS", note: "Mimos são pequenos carinhos. Quero encher seus dias deles, sem precisar de ocasião especial." },
+  { word: "MIMAR", note: "Mimar você é uma das minhas vontades favoritas: cuidar, agradar e fazer você se sentir amada." },
+  { word: "MINHA", note: "Minha palavra favorita não é posse: é o carinho de saber que escolhemos caminhar juntos." },
+  { word: "MORAR", note: "Morar no seu coração é uma ideia bonita. Enquanto isso, adoro construir um lar em cada abraço seu." },
+  { word: "NINHO", note: "Ninho é abrigo. Com você, até um abraço vira um cantinho seguro para descansar." },
+  { word: "OLHOS", note: "Nos seus olhos encontro ternura, coragem e um mundo inteiro que adoro conhecer." },
+  { word: "OUVIR", note: "Ouvir você é uma forma de estar perto. Quero conhecer seus pensamentos, planos e histórias." },
+  { word: "PACTO", note: "Nosso pacto é continuar cuidando um do outro, com sinceridade, parceria e muito carinho." },
+  { word: "PASSE", note: "Um passe abre caminho no jogo. Na vida, você abriu caminhos novos e bonitos dentro de mim." },
+  { word: "PENSA", note: "Quando penso no que me faz bem, você aparece em tantas lembranças que eu sorrio sem perceber." },
+  { word: "PERTO", note: "Perto de você, meu coração desacelera. É uma distância que eu gostaria de encurtar sempre." },
+  { word: "PODER", note: "Você tem o poder de tornar especial um dia comum, só por dividir ele comigo." },
+  { word: "POEMA", note: "Se eu escrevesse um poema sobre você, ainda faltariam palavras para contar tudo que sinto." },
+  { word: "POUCO", note: "Um pouco de tempo com você quase sempre vira o melhor pedaço do meu dia." },
+  { word: "QUERO", note: "Quero continuar aprendendo seu jeito, celebrando suas conquistas e escolhendo você todos os dias." },
+  { word: "RINDO", note: "Quando estou rindo com você, até os problemas parecem dar uma pausa." },
+  { word: "SABER", note: "Quero saber dos seus sonhos, das suas ideias e de como foi seu dia. Tudo que vem de você me importa." },
+  { word: "SABOR", note: "A vida tem outro sabor quando a gente divide as pequenas alegrias e os momentos gostosos." },
+  { word: "SINAL", note: "Seu sorriso é meu sinal favorito de que o momento ficou mais bonito." },
+  { word: "TARDE", note: "Uma tarde qualquer ao seu lado pode virar uma das minhas lembranças preferidas." },
+  { word: "TERNO", note: "Terno é um carinho delicado e sincero. É assim que quero tratar o que existe entre nós." },
+  { word: "TESAO", note: "Desejo também faz parte do nosso amor, junto com o respeito, a confiança e o carinho." },
+  { word: "TRATO", note: "Trato você com carinho porque o que construímos merece cuidado em cada gesto." },
+  { word: "UNIDO", note: "Unidos, a gente pode ser diferente e ainda assim formar um time bonito." },
+  { word: "VALOR", note: "Você tem um valor imenso, mesmo nos dias em que não consegue enxergar isso. Eu enxergo." },
+  { word: "VAMOS", note: "Vamos juntos, no nosso ritmo, criando histórias que ainda vamos contar sorrindo." },
+  { word: "VERSO", note: "Cada verso que eu inventasse sobre você terminaria falando do quanto sou feliz por te amar." },
+  { word: "VIDAS", note: "Gosto de imaginar nossas vidas se encontrando e fazendo espaço uma para a outra." },
+  { word: "VINHO", note: "Como um bom vinho, alguns momentos ficam ainda melhores quando são compartilhados com você." },
+  { word: "VOZES", note: "No meio de tantas vozes, a sua é uma das que meu coração reconhece e procura." },
+  { word: "LEVAR", note: "Quero levar comigo as lembranças boas que a gente cria e continuar fazendo outras ao seu lado." },
+  { word: "CONTO", note: "Se nosso amor fosse um conto, eu gostaria de escrever muitos capítulos felizes com você." },
+  { word: "CERTO", note: "Não sei tudo sobre o futuro, mas estar com você parece uma escolha certa para o meu coração." },
+  { word: "GRATO", note: "Sou grato por quem você é, pelo que vivemos e por cada chance de estar ao seu lado." },
+  { word: "UNICA", note: "Única é você: não existe outra pessoa com seu jeito de rir, cuidar, sonhar e fazer meu mundo melhor." }
 ];
 const PORTUGUESE_WORDS = window.PORTUGUESE_WORDS;
 WORDS.forEach(({ word }) => PORTUGUESE_WORDS.add(word));
@@ -64,6 +123,7 @@ const nextStageLabelEl = document.querySelector("#next-stage-label");
 const shareRowEl = document.querySelector("#share-row");
 const installButton = document.querySelector("#install-button");
 let game;
+let wordCycle;
 let selectedLevel = 0;
 let draft = Array(5).fill("");
 let cursorPosition = 0;
@@ -81,15 +141,75 @@ function todayInSaoPaulo() {
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
-function dayNumber(date) {
-  const utcDate = value => {
-    const [year, month, day] = value.split("-").map(Number);
-    return Date.UTC(year, month - 1, day);
-  };
-  return Math.floor((utcDate(date) - utcDate(START_DATE)) / 86400000);
+function progressKey(date) { return `${STORAGE_PREFIX}progress:${date}`; }
+function createWordCycle() {
+  const order = WORDS.map(({ word }) => word);
+  for (let index = order.length - 1; index > 0; index--) {
+    const other = Math.floor(Math.random() * (index + 1));
+    [order[index], order[other]] = [order[other], order[index]];
+  }
+  return { order, solved: [] };
 }
 
-function progressKey(date) { return `${STORAGE_PREFIX}progress:${date}`; }
+function migrateWordCycle() {
+  const cycle = createWordCycle();
+  const validWords = new Set(WORDS.map(({ word }) => word));
+  const completed = new Set();
+  const pending = new Set();
+  let progressKeys = [];
+  try {
+    progressKeys = Object.keys(localStorage)
+      .filter(key => key.startsWith(`${STORAGE_PREFIX}progress:`))
+      .sort()
+      .reverse();
+  } catch (_) { /* Começa um ciclo novo se o navegador bloquear o armazenamento. */ }
+
+  for (const key of progressKeys) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(key));
+      for (const answer of (saved?.levels || []).flatMap(level => level.answers || [])) {
+        if (!validWords.has(answer.target)) continue;
+        if (answer.solved) completed.add(answer.target);
+        else if (!completed.has(answer.target)) pending.add(answer.target);
+      }
+    } catch (_) { /* Ignora partidas antigas inválidas. */ }
+  }
+
+  cycle.solved = [...completed];
+  cycle.order = [
+    ...[...pending].filter(word => !completed.has(word)),
+    ...cycle.order.filter(word => !completed.has(word) && !pending.has(word)),
+    ...cycle.order.filter(word => completed.has(word))
+  ];
+  return cycle.solved.length === WORDS.length ? createWordCycle() : cycle;
+}
+
+function readWordCycle() {
+  try {
+    const raw = localStorage.getItem(WORD_CYCLE_KEY);
+    if (!raw) return migrateWordCycle();
+    const value = JSON.parse(raw);
+    const validWords = new Set(WORDS.map(({ word }) => word));
+    const validOrder = Array.isArray(value?.order)
+      && value.order.length === WORDS.length
+      && new Set(value.order).size === WORDS.length
+      && value.order.every(word => validWords.has(word));
+    if (!validOrder || !Array.isArray(value.solved)) return migrateWordCycle();
+    return { order: value.order, solved: [...new Set(value.solved.filter(word => validWords.has(word)))] };
+  } catch (_) { return migrateWordCycle(); }
+}
+
+function saveWordCycle() {
+  try { localStorage.setItem(WORD_CYCLE_KEY, JSON.stringify(wordCycle)); }
+  catch (_) { /* O jogo continua nesta sessão se o navegador bloquear o armazenamento. */ }
+}
+
+function markWordSolved(word) {
+  if (!wordCycle.solved.includes(word)) wordCycle.solved.push(word);
+  if (wordCycle.solved.length === WORDS.length) wordCycle = createWordCycle();
+  saveWordCycle();
+}
+
 function readSavedGame(date) {
   try {
     const raw = localStorage.getItem(progressKey(date));
@@ -99,8 +219,8 @@ function readSavedGame(date) {
       && Array.isArray(value.levels)
       && value.levels.length === LEVELS.length
       && value.levels.every((level, index) => Array.isArray(level.answers)
-        && level.answers.length === LEVELS[index].count
-        && level.answers.every(answer => /^[A-Z]{5}$/.test(answer.target)
+        && level.answers.length <= LEVELS[index].count
+        && level.answers.every(answer => WORDS.some(item => item.word === answer.target)
           && Array.isArray(answer.guesses)
           && answer.guesses.length <= MAX_GUESSES
           && typeof answer.solved === "boolean"
@@ -119,12 +239,18 @@ function saveGame() {
 }
 
 function createGame(date) {
-  const offset = Math.max(0, dayNumber(date)) * 7;
+  const solved = new Set(wordCycle.solved);
+  let available = wordCycle.order.filter(word => !solved.has(word));
+  if (!available.length) {
+    wordCycle = createWordCycle();
+    saveWordCycle();
+    available = wordCycle.order;
+  }
   let cursor = 0;
   const levels = LEVELS.map(level => ({
-    answers: Array.from({ length: level.count }, () => {
-      const target = WORDS[(offset + cursor++) % WORDS.length];
-      return { target: target.word, guesses: [], solved: false, failed: false };
+    answers: Array.from({ length: Math.min(level.count, Math.max(0, available.length - cursor)) }, () => {
+      const target = available[cursor++];
+      return { target, guesses: [], solved: false, failed: false };
     })
   }));
   return { date, levels };
@@ -241,7 +367,10 @@ function submitGuess() {
     if (answer.solved || answer.failed) continue;
     const feedback = feedbackForGuess(word, answer.target);
     answer.guesses.push({ word, feedback });
-    if (word === answer.target) answer.solved = true;
+    if (word === answer.target && !answer.solved) {
+      answer.solved = true;
+      markWordSolved(answer.target);
+    }
     else if (answer.guesses.length >= MAX_GUESSES) answer.failed = true;
   }
   draft = Array(5).fill("");
@@ -349,7 +478,8 @@ function renderTabs() {
     tab.type = "button";
     tab.className = `mode-tab${selectedLevel === index ? " active" : ""}${levelIsDone(game.levels[index]) ? " done" : ""}`;
     tab.textContent = level.label;
-    tab.disabled = waiting ? index > selectedLevel : index > (active < 0 ? LEVELS.length - 1 : active);
+    tab.disabled = game.levels[index].answers.length === 0
+      || (waiting ? index > selectedLevel : index > (active < 0 ? LEVELS.length - 1 : active));
     tab.setAttribute("aria-current", selectedLevel === index ? "page" : "false");
     tab.addEventListener("click", () => {
       selectedLevel = index;
@@ -384,7 +514,7 @@ function updateStageTransition() {
     return;
   }
 
-  nextStageLabelEl.textContent = `Ir para ${LEVELS[selectedLevel + 1].label}`;
+  nextStageLabelEl.textContent = `Ir para ${LEVELS[activeLevel()].label}`;
   if (transitionForLevel === selectedLevel) return;
   transitionForLevel = selectedLevel;
   stageTransitionEl.hidden = true;
@@ -476,7 +606,11 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) newD
 
 function start() {
   const today = todayInSaoPaulo();
+  wordCycle = readWordCycle();
   game = readSavedGame(today) || createGame(today);
+  game.levels.flatMap(level => level.answers).filter(answer => answer.solved)
+    .forEach(answer => { if (!wordCycle.solved.includes(answer.target)) wordCycle.solved.push(answer.target); });
+  saveWordCycle();
   const pending = game.pendingStage;
   const validPending = Number.isInteger(pending)
     && pending >= 0
