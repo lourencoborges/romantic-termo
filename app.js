@@ -370,6 +370,16 @@ function newDayIfNeeded() {
   render();
 }
 
+function resetTodaysProgress() {
+  if (!window.confirm("Reiniciar o progresso de hoje? As palavras do desafio continuam iguais.")) return;
+  try { localStorage.removeItem(progressKey(game.date)); } catch (_) {}
+  game = createGame(game.date);
+  selectedLevel = 0;
+  draft = "";
+  saveGame();
+  render();
+}
+
 function shareResult() {
   const blocks = game.levels.map((level, levelIndex) => {
     const name = LEVELS[levelIndex].label;
@@ -403,6 +413,9 @@ document.querySelector("#close-help").addEventListener("click", closeHelp);
 document.querySelector("#got-it").addEventListener("click", closeHelp);
 helpDialog.addEventListener("click", event => { if (event.target === helpDialog) closeHelp(); });
 document.querySelector("#share-button").addEventListener("click", shareResult);
+const developerTools = document.querySelector("#developer-tools");
+if (new URLSearchParams(window.location.search).get("dev") === "1") developerTools.hidden = false;
+document.querySelector("#reset-game-button").addEventListener("click", resetTodaysProgress);
 document.querySelector("#next-stage-button").addEventListener("click", advanceStage);
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
