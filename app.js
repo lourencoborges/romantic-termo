@@ -89,8 +89,21 @@ function readSavedGame(date) {
     const raw = localStorage.getItem(progressKey(date));
     if (!raw) return null;
     const value = JSON.parse(raw);
-    if (value?.date !== date || !Array.isArray(value.levels) || value.levels.length !== LEVELS.length) return null;
-    return value;
+    const valid = value?.date === date
+      && Array.isArray(value.levels)
+      && value.levels.length === LEVELS.length
+      && value.levels.every((level, index) => Array.isArray(level.answers)
+        && level.answers.length === LEVELS[index].count
+        && level.answers.every(answer => /^[A-Z]{5}$/.test(answer.target)
+          && Array.isArray(answer.guesses)
+          && answer.guesses.length <= MAX_GUESSES
+          && typeof answer.solved === "boolean"
+          && typeof answer.failed === "boolean"
+          && answer.guesses.every(guess => /^[A-Z]{5}$/.test(guess.word)
+            && Array.isArray(guess.feedback)
+            && guess.feedback.length === 5
+            && guess.feedback.every(mark => ["correct", "present", "absent"].includes(mark)))));
+    return valid ? value : null;
   } catch (_) { return null; }
 }
 
@@ -140,7 +153,8 @@ function feedbackForGuess(guess, target) {
 function keyFeedback(letter) {
   let best = "";
   const priority = { absent: 1, present: 2, correct: 3 };
-  for (const level of game.levels) for (const answer of level.answers) {
+  const level = game.levels[selectedLevel];
+  for (const answer of level.answers) {
     for (const guess of answer.guesses) {
       guess.word.split("").forEach((value, index) => {
         if (value === letter && priority[guess.feedback[index]] > (priority[best] || 0)) best = guess.feedback[index];

@@ -1,4 +1,4 @@
-const CACHE_NAME = "palavras-de-amor-v1";
+const CACHE_NAME = "palavras-de-amor-v2";
 const APP_SHELL = ["/", "/style.css", "/app.js", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", event => {
@@ -9,7 +9,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => name.startsWith("palavras-de-amor-") && name !== CACHE_NAME).map(name => caches.delete(name)));
+    await Promise.all(names.filter(name => (name.startsWith("palavras-de-amor-") || name.startsWith("palavras-amor-")) && name !== CACHE_NAME).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });
