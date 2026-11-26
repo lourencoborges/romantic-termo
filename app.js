@@ -60,7 +60,6 @@ const noteTextEl = document.querySelector("#love-note-text");
 const stageTransitionEl = document.querySelector("#stage-transition");
 const nextStageLabelEl = document.querySelector("#next-stage-label");
 const shareRowEl = document.querySelector("#share-row");
-const helpDialog = document.querySelector("#help-dialog");
 const installButton = document.querySelector("#install-button");
 let game;
 let selectedLevel = 0;
@@ -446,28 +445,11 @@ function shareResult() {
   else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showMessage("Resultado copiado. Agora manda um carinho junto. ♥")).catch(() => showMessage("Não consegui copiar por aqui."));
 }
 
-function openHelp() {
-  helpDialog.hidden = false;
-  document.querySelector("#close-help").focus();
-}
-function closeHelp() {
-  helpDialog.hidden = true;
-  document.querySelector("#help-button").focus();
-}
-
 document.addEventListener("keydown", event => {
-  if (!helpDialog.hidden) {
-    if (event.key === "Escape") closeHelp();
-    return;
-  }
   if (event.key === "Enter") { event.preventDefault(); submitGuess(); }
   else if (event.key === "Backspace") { event.preventDefault(); removeLetter(); }
   else if (event.key.length === 1 && /[a-zA-Záàâãéêíóôõúç]/i.test(event.key)) addLetter(event.key);
 });
-document.querySelector("#help-button").addEventListener("click", openHelp);
-document.querySelector("#close-help").addEventListener("click", closeHelp);
-document.querySelector("#got-it").addEventListener("click", closeHelp);
-helpDialog.addEventListener("click", event => { if (event.target === helpDialog) closeHelp(); });
 document.querySelector("#share-button").addEventListener("click", shareResult);
 document.querySelector("#reset-game-button").addEventListener("click", resetTodaysProgress);
 document.querySelector("#next-stage-button").addEventListener("click", advanceStage);
