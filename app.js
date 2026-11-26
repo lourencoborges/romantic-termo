@@ -112,6 +112,7 @@ const LEVELS = [
 ];
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 const levelsEl = document.querySelector("#levels");
+const modeMenuToggle = document.querySelector("#mode-menu-toggle");
 const boardsEl = document.querySelector("#boards");
 const messageEl = document.querySelector("#message");
 const keyboardEl = document.querySelector("#keyboard");
@@ -125,6 +126,7 @@ const installButton = document.querySelector("#install-button");
 let game;
 let wordCycle;
 let selectedLevel = 0;
+let modesMenuOpen = false;
 let draft = Array(5).fill("");
 let cursorPosition = 0;
 let positionSelectedByUser = false;
@@ -308,6 +310,13 @@ function showMessage(text) {
   if (text) toastTimer = window.setTimeout(() => { messageEl.textContent = ""; }, 2400);
 }
 
+function setModesMenuOpen(open) {
+  modesMenuOpen = open;
+  levelsEl.classList.toggle("open", open);
+  levelsEl.setAttribute("aria-hidden", String(!open));
+  modeMenuToggle.setAttribute("aria-expanded", String(open));
+}
+
 function nextEmptyPosition(from) {
   for (let step = 1; step <= draft.length; step++) {
     const position = (from + step) % draft.length;
@@ -483,6 +492,7 @@ function renderTabs() {
     tab.setAttribute("aria-current", selectedLevel === index ? "page" : "false");
     tab.addEventListener("click", () => {
       selectedLevel = index;
+      setModesMenuOpen(false);
       draft = Array(5).fill("");
       cursorPosition = 0;
       positionSelectedByUser = false;
@@ -526,6 +536,7 @@ function updateStageTransition() {
 
 function advanceStage() {
   if (!waitingForNextStage()) return;
+  setModesMenuOpen(false);
   delete game.pendingStage;
   selectedLevel = activeLevel();
   draft = Array(5).fill("");
@@ -582,9 +593,14 @@ function shareResult() {
 }
 
 document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && modesMenuOpen) { setModesMenuOpen(false); return; }
   if (event.key === "Enter") { event.preventDefault(); submitGuess(); }
   else if (event.key === "Backspace") { event.preventDefault(); removeLetter(); }
   else if (event.key.length === 1 && /[a-zA-Záàâãéêíóôõúç]/i.test(event.key)) addLetter(event.key);
+});
+modeMenuToggle.addEventListener("click", () => setModesMenuOpen(!modesMenuOpen));
+document.addEventListener("click", event => {
+  if (modesMenuOpen && !event.target.closest(".site-header")) setModesMenuOpen(false);
 });
 document.querySelector("#share-button").addEventListener("click", shareResult);
 document.querySelector("#reset-game-button").addEventListener("click", resetTodaysProgress);

@@ -19,9 +19,11 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/" aria-label="Palavras que me lembram você, M">
+    <button id="mode-menu-toggle" class="brand mode-menu-toggle" type="button" aria-label="Abrir modos de jogo" aria-expanded="false" aria-controls="levels">
       <span class="brand-name">Palavras que me lembram você, M</span>
-    </a>
+      <span class="mode-menu-chevron" aria-hidden="true">⌄</span>
+    </button>
+    <nav id="levels" class="mode-tabs" aria-label="Modo de jogo" aria-hidden="true"></nav>
     <div class="header-tools">
       <button id="install-button" class="install-button" type="button" hidden>Instalar</button>
     </div>
@@ -29,7 +31,6 @@
 
   <main class="app-shell">
     <section class="game-card" aria-label="Jogo Palavras de Amor">
-      <nav id="levels" class="mode-tabs" aria-label="Modo de jogo"></nav>
       <p id="message" class="message" role="status" aria-live="polite"></p>
       <section id="board-wrap" class="board-wrap" aria-label="Tabuleiros do desafio"><div id="boards" class="boards"></div></section>
       <div id="keyboard" class="keyboard" aria-label="Teclado virtual"></div>
