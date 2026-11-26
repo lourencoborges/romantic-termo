@@ -145,13 +145,17 @@ function todayInSaoPaulo() {
 }
 
 function progressKey(date) { return `${STORAGE_PREFIX}progress:${date}`; }
+function newWordCycleId() {
+  return globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
+
 function createWordCycle() {
   const order = WORDS.map(({ word }) => word);
   for (let index = order.length - 1; index > 0; index--) {
     const other = Math.floor(Math.random() * (index + 1));
     [order[index], order[other]] = [order[other], order[index]];
   }
-  return { order, solved: [] };
+  return { id: newWordCycleId(), order, solved: [] };
 }
 
 function migrateWordCycle() {
@@ -198,7 +202,11 @@ function readWordCycle() {
       && new Set(value.order).size === WORDS.length
       && value.order.every(word => validWords.has(word));
     if (!validOrder || !Array.isArray(value.solved)) return migrateWordCycle();
-    return { order: value.order, solved: [...new Set(value.solved.filter(word => validWords.has(word)))] };
+    return {
+      id: typeof value.id === "string" ? value.id : newWordCycleId(),
+      order: value.order,
+      solved: [...new Set(value.solved.filter(word => validWords.has(word)))]
+    };
   } catch (_) { return migrateWordCycle(); }
 }
 
@@ -208,6 +216,7 @@ function saveWordCycle() {
 }
 
 function markWordSolved(word) {
+  if (game.cycleId !== wordCycle.id) return;
   if (!wordCycle.solved.includes(word)) wordCycle.solved.push(word);
   if (wordCycle.solved.length === WORDS.length) wordCycle = createWordCycle();
   saveWordCycle();
@@ -256,7 +265,7 @@ function createGame(date) {
       return { target, guesses: [], solved: false, failed: false };
     })
   }));
-  return { date, levels };
+  return { date, cycleId: wordCycle.id, levels };
 }
 
 function activeLevel() {
@@ -575,8 +584,15 @@ function newDayIfNeeded() {
 
 function resetTodaysProgress() {
   if (!window.confirm("Reiniciar o progresso de hoje? As palavras do desafio continuam iguais.")) return;
-  try { localStorage.removeItem(progressKey(game.date)); } catch (_) {}
-  game = createGame(game.date);
+  game.levels = game.levels.map(level => ({
+    answers: level.answers.map(answer => ({
+      target: answer.target,
+      guesses: [],
+      solved: false,
+      failed: false
+    }))
+  }));
+  delete game.pendingStage;
   selectedLevel = 0;
   draft = Array(5).fill("");
   cursorPosition = 0;
@@ -627,9 +643,13 @@ function start() {
   const today = todayInSaoPaulo();
   wordCycle = readWordCycle();
   game = readSavedGame(today) || createGame(today);
-  game.levels.flatMap(level => level.answers).filter(answer => answer.solved)
-    .forEach(answer => { if (!wordCycle.solved.includes(answer.target)) wordCycle.solved.push(answer.target); });
+  if (!game.cycleId) game.cycleId = wordCycle.id;
+  if (game.cycleId === wordCycle.id) {
+    game.levels.flatMap(level => level.answers).filter(answer => answer.solved)
+      .forEach(answer => { if (!wordCycle.solved.includes(answer.target)) wordCycle.solved.push(answer.target); });
+  }
   saveWordCycle();
+  saveGame();
   const pending = game.pendingStage;
   const validPending = Number.isInteger(pending)
     && pending >= 0
