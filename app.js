@@ -489,7 +489,7 @@ function renderTabs() {
     const tab = document.createElement("button");
     tab.type = "button";
     tab.className = `mode-tab${selectedLevel === index ? " active" : ""}${levelIsDone(game.levels[index]) ? " done" : ""}`;
-    tab.textContent = level.label;
+    tab.textContent = level.label.toLowerCase();
     tab.disabled = game.levels[index].answers.length === 0
       || (waiting ? index > selectedLevel : index > (active < 0 ? LEVELS.length - 1 : active));
     tab.setAttribute("aria-current", selectedLevel === index ? "page" : "false");
