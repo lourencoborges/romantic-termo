@@ -421,9 +421,6 @@ function newDayIfNeeded() {
   cursorPosition = 0;
   positionSelectedByUser = false;
   saveGame();
-  document.querySelector("#today-label").textContent = new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long"
-  }).format(new Date()).toLocaleUpperCase("pt-BR");
   render();
 }
 
@@ -498,9 +495,6 @@ function start() {
     && pending < LEVELS.length - 1
     && levelIsDone(game.levels[pending]);
   selectedLevel = validPending ? pending : Math.max(0, activeLevel());
-  document.querySelector("#today-label").textContent = new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long"
-  }).format(new Date()).toLocaleUpperCase("pt-BR");
   render();
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js").catch(() => {});
   window.setInterval(newDayIfNeeded, 30000);

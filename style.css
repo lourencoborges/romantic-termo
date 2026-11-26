@@ -42,14 +42,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .help-button { width: 31px; height: 31px; border: 1px solid #866978; border-radius: 50%; background: #ffffff06; color: var(--rose-light); font-weight: 700; cursor: pointer; touch-action: manipulation; }
 .install-button { border: 1px solid #956c7b; border-radius: 99px; padding: 7px 12px; background: #462d3a; color: var(--cream); font-size: 11px; font-weight: 700; cursor: pointer; }
 .app-shell { width: min(100% - 32px, 540px); margin: 0 auto; }
-.intro { padding: 38px 0 26px; text-align: center; }
-h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 7vw, 49px); font-weight: 400; line-height: 1.08; letter-spacing: -.045em; }
-.name-initial { color: var(--rose-light); font-style: italic; }
-.date-line { display: inline-flex; align-items: center; gap: 8px; color: var(--rose-light); font-size: 9px; font-weight: 800; letter-spacing: .13em; }
 .game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.game-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1px 2px 14px; }
-.challenge-title { display: flex; align-items: center; gap: 8px; color: #e7d6dc; font-size: 9px; font-weight: 850; letter-spacing: .16em; }
-.tiny-heart { color: var(--rose); font-size: 13px; }
 .mode-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 4px; border: 1px solid #ffffff0c; border-radius: 13px; background: #140e13a6; }
 .mode-tab { min-width: 0; padding: 10px 4px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #ab96a0; font-size: 12px; font-weight: 750; text-transform: capitalize; cursor: pointer; transition: background .18s, color .18s, border-color .18s; touch-action: manipulation; }
 .mode-tab.active { border-color: #e99eb331; background: linear-gradient(135deg, #80465c, #573344); color: #fff4ed; box-shadow: 0 4px 14px #100a0d55; }
@@ -91,8 +84,6 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
 .share-row { margin-top: 12px; text-align: center; }
 .share-button { padding: 9px 14px; border: 1px solid #9f7483; border-radius: 99px; background: #4a303d; color: #fbe8ed; font-size: 10px; font-weight: 750; cursor: pointer; touch-action: manipulation; }
 .share-button span { margin-right: 5px; color: var(--rose-light); }
-.page-footer { padding: 18px 8px 26px; color: #987f8b; font-family: Georgia, "Times New Roman", serif; font-size: 11px; font-style: italic; text-align: center; }
-.page-footer span { margin: 0 6px; color: #c66f88; font-size: 9px; }
 .dialog-backdrop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 18px; background: #090609dc; overscroll-behavior: contain; }
 .dialog { position: relative; width: min(100%, 410px); max-height: min(88svh, 640px); overflow: auto; padding: 28px 25px 23px; border: 1px solid #e3a4b532; border-radius: 20px; background: #291b25; color: var(--cream); box-shadow: 0 22px 75px #0009; line-height: 1.65; }
 .close-help { position: absolute; top: 10px; right: 12px; width: 36px; height: 36px; border: 0; background: none; color: #d5b9c4; font-size: 27px; cursor: pointer; }
@@ -110,20 +101,13 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
   .brand-name { font-size: 14px; }
   .header-tools { gap: 10px; }
   .app-shell { width: calc(100% - 24px); }
-  .intro { padding: 31px 0 21px; }
-  .desktop-break { display: none; }
   .game-card { padding: 14px 11px 15px; }
-  .game-card-top { padding-bottom: 11px; }
-  .challenge-title { font-size: 8px; }
   .mode-tab { padding: 9px 2px; font-size: 11px; }
   .board-wrap { min-height: 299px; }
   .board-grid.quartet .board { --tile-size: clamp(21px, 7.3vw, 30px); }
 }
 @media (max-height: 740px) and (max-width: 600px) {
-  .intro { padding-top: 20px; padding-bottom: 16px; }
-  h1 { font-size: 34px; }
   .board-wrap { min-height: 0; }
-  .page-footer { padding-bottom: 14px; }
   .keyboard-hint { margin-top: 7px; }
 }
 @media (prefers-reduced-motion: reduce) {
