@@ -38,7 +38,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .site-header { position: relative; z-index: 5; width: 100%; margin: 0 auto; }
 .header-main { position: relative; display: flex; min-height: 66px; align-items: center; justify-content: center; }
 .brand { display: inline-flex; min-width: 0; align-items: center; color: var(--cream); text-decoration: none; }
-.mode-menu-toggle { position: absolute; left: 8px; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; border: 1px solid #3b2b34; border-radius: 8px; background: #21171e; color: #f3e1e5; font-size: 20px; line-height: 1; cursor: pointer; }
+.mode-menu-toggle { position: absolute; left: 8px; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; border: 1px solid #34242e; border-radius: 4px; background: #241a21; color: #f3e1e5; font-size: 20px; line-height: 1; cursor: pointer; }
 .brand { position: absolute; left: 50%; transform: translateX(-50%); }
 .brand-name { font-family: Georgia, "Times New Roman", serif; font-size: clamp(11px, 4vw, 16px); letter-spacing: .015em; white-space: nowrap; }
 .header-tools { position: absolute; right: 0; display: flex; align-items: center; gap: 14px; }
