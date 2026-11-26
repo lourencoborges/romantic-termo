@@ -1,5 +1,5 @@
-const CACHE_NAME = "palavras-de-amor-v17";
-const APP_SHELL = ["/", "/style.css", "/app.js", "/manifest.webmanifest", "/icon.svg"];
+const CACHE_NAME = "palavras-de-amor-v18";
+const APP_SHELL = ["/", "/style.css", "/app.js", "/portuguese-words.js", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));

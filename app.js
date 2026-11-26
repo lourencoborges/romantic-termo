@@ -44,6 +44,8 @@ const WORDS = [
   { word: "AMADA", note: "Que você nunca se esqueça: é muito amada, exatamente assim, em todos os seus jeitos." },
   { word: "GRATA", note: "Sou grato por cada conversa, cada abraço e por você ter cruzado o meu caminho." }
 ];
+const PORTUGUESE_WORDS = window.PORTUGUESE_WORDS;
+WORDS.forEach(({ word }) => PORTUGUESE_WORDS.add(word));
 const LEVELS = [
   { id: "termo", label: "Termo", count: 1 },
   { id: "dueto", label: "Dueto", count: 2 },
@@ -230,6 +232,10 @@ function submitGuess() {
   if (activeLevel() !== selectedLevel || allDone()) return;
   if (!draft.every(Boolean)) { showMessage("Complete as cinco posições para enviar. ♥"); return; }
   const word = draft.join("");
+  if (!PORTUGUESE_WORDS.has(word)) {
+    showMessage("Essa palavra não foi encontrada em português. Tente outra. ♥");
+    return;
+  }
   const level = game.levels[selectedLevel];
   for (const answer of level.answers) {
     if (answer.solved || answer.failed) continue;
