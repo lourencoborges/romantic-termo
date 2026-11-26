@@ -35,17 +35,18 @@ body {
 button { color: inherit; font: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 [hidden] { display: none !important; }
-.site-header { position: relative; z-index: 5; width: min(100% - 38px, 1100px); min-height: 66px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+.site-header { position: relative; z-index: 5; width: min(100% - 38px, 1100px); margin: 0 auto; }
+.header-main { position: relative; display: flex; min-height: 66px; align-items: center; justify-content: center; }
 .brand { display: inline-flex; min-width: 0; align-items: center; color: var(--cream); text-decoration: none; }
-.mode-menu-toggle { position: absolute; right: 0; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 38px; padding: 0; border: 0; background: transparent; color: var(--rose-light); font-size: 20px; line-height: 1; cursor: pointer; }
+.mode-menu-toggle { position: absolute; right: 0; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 8px; background: #fff; color: var(--night); font-size: 20px; line-height: 1; cursor: pointer; }
 .brand { position: absolute; left: 50%; transform: translateX(-50%); }
 .brand-name { font-family: Georgia, "Times New Roman", serif; font-size: clamp(11px, 4vw, 16px); letter-spacing: .015em; white-space: nowrap; }
 .header-tools { position: absolute; right: 40px; display: flex; align-items: center; gap: 14px; }
 .install-button { border: 1px solid #956c7b; border-radius: 99px; padding: 7px 12px; background: #462d3a; color: var(--cream); font-size: 11px; font-weight: 700; cursor: pointer; }
 .app-shell { width: min(100% - 32px, 540px); margin: 0 auto; }
 .game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.mode-tabs { position: absolute; top: calc(100% - 7px); right: 0; left: auto; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: min(100%, 340px); max-height: 0; overflow: hidden; padding: 0 4px; border: 1px solid transparent; border-radius: 13px; background: transparent; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: max-height .22s ease, opacity .18s ease, transform .22s ease, visibility .22s; }
-.mode-tabs.open { max-height: 72px; padding: 4px; border-color: #ffffff0c; background: #140e13; opacity: 1; visibility: visible; transform: translateY(0); }
+.mode-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: min(100%, 340px); max-height: 0; overflow: hidden; margin: 0 auto; padding: 0 4px; border: 0; border-radius: 13px; background: transparent; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: max-height .22s ease, opacity .18s ease, transform .22s ease, visibility .22s, margin .22s ease; }
+.mode-tabs.open { max-height: 72px; margin-bottom: 10px; padding: 4px; border: 1px solid #ffffff0c; background: #140e13; opacity: 1; visibility: visible; transform: translateY(0); }
 .mode-tab { min-width: 0; padding: 10px 4px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #ab96a0; font-size: 12px; font-weight: 750; text-transform: capitalize; cursor: pointer; transition: background .18s, color .18s, border-color .18s; touch-action: manipulation; }
 .mode-tab.active { border-color: #e99eb331; background: linear-gradient(135deg, #80465c, #573344); color: #fff4ed; box-shadow: 0 4px 14px #100a0d55; }
 .mode-tab.done:not(.active) { color: #a8d3bd; }
@@ -90,7 +91,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .noscript { width: min(100% - 30px, 500px); margin: 25px auto; color: var(--rose-light); text-align: center; }
 @keyframes note-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 430px) {
-  .site-header { width: calc(100% - 28px); min-height: 58px; }
+  .site-header { width: calc(100% - 28px); }
+  .header-main { min-height: 58px; }
   .header-tools { gap: 10px; }
   .app-shell { width: calc(100% - 24px); }
   .game-card { padding: 14px 11px 15px; }
