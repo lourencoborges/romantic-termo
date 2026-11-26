@@ -65,7 +65,9 @@ const helpDialog = document.querySelector("#help-dialog");
 const installButton = document.querySelector("#install-button");
 let game;
 let selectedLevel = 0;
-let draft = "";
+let draft = Array(5).fill("");
+let cursorPosition = 0;
+let positionSelectedByUser = false;
 let installPrompt = null;
 let toastTimer = 0;
 let transitionTimer = 0;
@@ -180,34 +182,67 @@ function showMessage(text) {
   if (text) toastTimer = window.setTimeout(() => { messageEl.textContent = ""; }, 2400);
 }
 
+function nextEmptyPosition(from) {
+  for (let step = 1; step <= draft.length; step++) {
+    const position = (from + step) % draft.length;
+    if (!draft[position]) return position;
+  }
+  return from;
+}
+
+function selectPosition(position) {
+  if (activeLevel() !== selectedLevel || allDone()) return;
+  cursorPosition = position;
+  positionSelectedByUser = true;
+  showMessage("");
+  render();
+}
+
 function addLetter(letter) {
-  if (activeLevel() !== selectedLevel || draft.length >= 5 || allDone()) return;
+  if (activeLevel() !== selectedLevel || allDone()) return;
+  if (draft.every(Boolean) && !positionSelectedByUser) return;
   const value = normaliseWord(letter);
   if (value.length !== 1) return;
-  draft += value;
+  draft[cursorPosition] = value;
+  positionSelectedByUser = false;
+  cursorPosition = nextEmptyPosition(cursorPosition);
   showMessage("");
   render();
 }
 
 function removeLetter() {
   if (activeLevel() !== selectedLevel || allDone()) return;
-  draft = draft.slice(0, -1);
+  let position = cursorPosition;
+  if (!draft[position]) {
+    for (let step = 1; step <= draft.length; step++) {
+      const previous = (cursorPosition - step + draft.length) % draft.length;
+      if (draft[previous]) { position = previous; break; }
+    }
+  }
+  if (draft[position]) {
+    draft[position] = "";
+    cursorPosition = position;
+  }
+  positionSelectedByUser = false;
   showMessage("");
   render();
 }
 
 function submitGuess() {
   if (activeLevel() !== selectedLevel || allDone()) return;
-  if (draft.length !== 5) { showMessage("Faltam letrinhas: complete cinco para enviar. ♥"); return; }
+  if (!draft.every(Boolean)) { showMessage("Complete as cinco posições para enviar. ♥"); return; }
+  const word = draft.join("");
   const level = game.levels[selectedLevel];
   for (const answer of level.answers) {
     if (answer.solved || answer.failed) continue;
-    const feedback = feedbackForGuess(draft, answer.target);
-    answer.guesses.push({ word: draft, feedback });
-    if (draft === answer.target) answer.solved = true;
+    const feedback = feedbackForGuess(word, answer.target);
+    answer.guesses.push({ word, feedback });
+    if (word === answer.target) answer.solved = true;
     else if (answer.guesses.length >= MAX_GUESSES) answer.failed = true;
   }
-  draft = "";
+  draft = Array(5).fill("");
+  cursorPosition = 0;
+  positionSelectedByUser = false;
   if (levelIsDone(level)) {
     if (selectedLevel < LEVELS.length - 1 && activeLevel() > selectedLevel) game.pendingStage = selectedLevel;
     else delete game.pendingStage;
@@ -229,8 +264,22 @@ function makeRows(answer, isCurrent) {
       const tile = document.createElement("div");
       const isActiveRow = isCurrent && row === answer.guesses.length;
       const letter = guess ? guess.word[column] : isActiveRow ? draft[column] : "";
-      tile.className = `tile${guess ? ` ${guess.feedback[column]}` : ""}${isActiveRow ? " current" : ""}${!guess && letter ? " filled" : ""}`;
+      tile.className = `tile${guess ? ` ${guess.feedback[column]}` : ""}${isActiveRow ? " current" : ""}${isActiveRow && cursorPosition === column ? " cursor" : ""}${!guess && letter ? " filled" : ""}`;
       tile.textContent = letter || "";
+      if (isActiveRow) {
+        tile.setAttribute("role", "button");
+        tile.setAttribute("tabindex", "0");
+        tile.setAttribute("aria-label", `Selecionar posição ${column + 1}${letter ? `, letra ${letter}` : ", vazia"}`);
+        tile.setAttribute("aria-pressed", String(cursorPosition === column));
+        tile.addEventListener("click", () => selectPosition(column));
+        tile.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            event.stopPropagation();
+            selectPosition(column);
+          }
+        });
+      }
       rowEl.append(tile);
     }
     board.append(rowEl);
@@ -298,7 +347,14 @@ function renderTabs() {
     tab.textContent = level.label;
     tab.disabled = waiting ? index > selectedLevel : index > (active < 0 ? LEVELS.length - 1 : active);
     tab.setAttribute("aria-current", selectedLevel === index ? "page" : "false");
-    tab.addEventListener("click", () => { selectedLevel = index; draft = ""; showMessage(""); render(); });
+    tab.addEventListener("click", () => {
+      selectedLevel = index;
+      draft = Array(5).fill("");
+      cursorPosition = 0;
+      positionSelectedByUser = false;
+      showMessage("");
+      render();
+    });
     levelsEl.append(tab);
   });
 }
@@ -338,7 +394,9 @@ function advanceStage() {
   if (!waitingForNextStage()) return;
   delete game.pendingStage;
   selectedLevel = activeLevel();
-  draft = "";
+  draft = Array(5).fill("");
+  cursorPosition = 0;
+  positionSelectedByUser = false;
   saveGame();
   render();
 }
@@ -363,7 +421,9 @@ function newDayIfNeeded() {
   if (game?.date === today) return;
   game = readSavedGame(today) || createGame(today);
   selectedLevel = 0;
-  draft = "";
+  draft = Array(5).fill("");
+  cursorPosition = 0;
+  positionSelectedByUser = false;
   saveGame();
   document.querySelector("#today-label").textContent = new Intl.DateTimeFormat("pt-BR", {
     timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long"
@@ -376,7 +436,9 @@ function resetTodaysProgress() {
   try { localStorage.removeItem(progressKey(game.date)); } catch (_) {}
   game = createGame(game.date);
   selectedLevel = 0;
-  draft = "";
+  draft = Array(5).fill("");
+  cursorPosition = 0;
+  positionSelectedByUser = false;
   saveGame();
   render();
 }
