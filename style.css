@@ -28,14 +28,9 @@ body {
   margin: 0;
   padding: var(--safe-top) 0 var(--safe-bottom);
   overflow-x: hidden;
-  background: radial-gradient(ellipse at 50% 0%, #63364a65 0%, transparent 33rem), radial-gradient(ellipse at 4% 55%, #6b35431b 0%, transparent 20rem), var(--night);
+  background: var(--night);
   color: var(--cream);
   -webkit-tap-highlight-color: transparent;
-}
-body::before {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .12;
-  background-image: radial-gradient(#f9d9e1 0.65px, transparent 0.65px); background-size: 23px 23px;
-  mask-image: linear-gradient(to bottom, black, transparent 75%);
 }
 button { color: inherit; font: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
