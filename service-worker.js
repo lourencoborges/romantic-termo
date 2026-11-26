@@ -1,4 +1,4 @@
-const CACHE_NAME = "palavras-de-amor-v6";
+const CACHE_NAME = "palavras-de-amor-v7";
 const APP_SHELL = ["/", "/style.css", "/app.js", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", event => {

@@ -72,6 +72,8 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
 .tile { width: var(--tile-size); height: var(--tile-size); display: grid; place-items: center; border: 1px solid #755d69; border-radius: 8px; background: #30222c; color: var(--cream); font-size: clamp(16px, 7vw, 25px); font-weight: 800; line-height: 1; box-shadow: inset 0 1px #ffffff08; transition: transform .12s, border-color .15s, background .18s; }
 .board-grid.duet .tile { border-radius: 6px; font-size: clamp(14px, 5.5vw, 20px); }
 .board-grid.quartet .tile { border-radius: 5px; font-size: clamp(12px, 4.5vw, 16px); }
+.tile.current { border-color: #a97889; background: #21171e; }
+.tile.current.filled { border-color: #d890a5; background: #30222c; }
 .tile.filled { border-color: #d890a5; transform: scale(1.035); }
 .tile.correct, .key.correct, .example .correct { border-color: var(--green); background: var(--green); color: #fff; }
 .tile.present, .key.present, .example .present { border-color: var(--yellow); background: var(--yellow); color: #fff; }

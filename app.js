@@ -227,8 +227,9 @@ function makeRows(answer, isCurrent) {
     const guess = answer.guesses[row];
     for (let column = 0; column < 5; column++) {
       const tile = document.createElement("div");
-      const letter = guess ? guess.word[column] : isCurrent && row === answer.guesses.length ? draft[column] : "";
-      tile.className = `tile${guess ? ` ${guess.feedback[column]}` : letter ? " filled" : ""}`;
+      const isActiveRow = isCurrent && row === answer.guesses.length;
+      const letter = guess ? guess.word[column] : isActiveRow ? draft[column] : "";
+      tile.className = `tile${guess ? ` ${guess.feedback[column]}` : ""}${isActiveRow ? " current" : ""}${!guess && letter ? " filled" : ""}`;
       tile.textContent = letter || "";
       rowEl.append(tile);
     }
