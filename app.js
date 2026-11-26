@@ -413,8 +413,6 @@ document.querySelector("#close-help").addEventListener("click", closeHelp);
 document.querySelector("#got-it").addEventListener("click", closeHelp);
 helpDialog.addEventListener("click", event => { if (event.target === helpDialog) closeHelp(); });
 document.querySelector("#share-button").addEventListener("click", shareResult);
-const developerTools = document.querySelector("#developer-tools");
-if (new URLSearchParams(window.location.search).get("dev") === "1") developerTools.hidden = false;
 document.querySelector("#reset-game-button").addEventListener("click", resetTodaysProgress);
 document.querySelector("#next-stage-button").addEventListener("click", advanceStage);
 window.addEventListener("beforeinstallprompt", event => {

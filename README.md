@@ -20,7 +20,7 @@ Acesse <http://localhost:8000/>. O jogo funciona sem dependências externas.
 - Os acentos são aceitos no teclado do aparelho e removidos para comparar as respostas.
 - O progresso fica salvo no navegador. Depois de abrir o site uma vez, o service worker guarda os arquivos para o jogo também abrir offline.
 - O desafio e a data seguem o fuso `America/Sao_Paulo`. Acertar a palavra do Termo revela um bilhetinho carinhoso.
-- Para desenvolvedores, `?dev=1` mostra um botão que reinicia o progresso de hoje sem mudar as palavras.
+- O botão **Reiniciar desafio de hoje**, no rodapé, reinicia o progresso sem mudar as palavras do dia.
 
 ## Publicar na web
 
