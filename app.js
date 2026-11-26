@@ -55,7 +55,6 @@ const boardsEl = document.querySelector("#boards");
 const messageEl = document.querySelector("#message");
 const keyboardEl = document.querySelector("#keyboard");
 const hintEl = document.querySelector("#keyboard-hint");
-const progressEl = document.querySelector("#challenge-progress");
 const noteEl = document.querySelector("#love-note");
 const noteTextEl = document.querySelector("#love-note-text");
 const stageTransitionEl = document.querySelector("#stage-transition");
@@ -406,9 +405,6 @@ function render() {
   renderBoards();
   renderKeyboard();
   const active = activeLevel();
-  const finishedCount = game.levels.filter(levelIsDone).length;
-  const displayedLevel = waitingForNextStage() ? selectedLevel : Math.max(0, active);
-  progressEl.textContent = allDone() ? "DESAFIO CONCLUÍDO · ♡" : `ETAPA ${displayedLevel + 1} DE 3 · ${finishedCount}/3 CONCLUÍDAS`;
   if (allDone()) showMessage("Você completou o desafio de hoje. Meu coração comemora com você. ♥");
   else if (waitingForNextStage()) showMessage("");
   else if (active !== selectedLevel) showMessage("Essa etapa já foi resolvida. Pode rever seus palpites. ♥");

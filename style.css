@@ -38,7 +38,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .site-header { width: min(100% - 38px, 1100px); min-height: 66px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff12; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--cream); text-decoration: none; }
 .brand-name { font-family: Georgia, "Times New Roman", serif; font-size: 16px; letter-spacing: .015em; }
-.brand-name b { color: var(--rose-light); font-weight: 400; font-style: italic; }
 .header-tools { display: flex; align-items: center; gap: 14px; }
 .help-button { width: 31px; height: 31px; border: 1px solid #866978; border-radius: 50%; background: #ffffff06; color: var(--rose-light); font-weight: 700; cursor: pointer; touch-action: manipulation; }
 .install-button { border: 1px solid #956c7b; border-radius: 99px; padding: 7px 12px; background: #462d3a; color: var(--cream); font-size: 11px; font-weight: 700; cursor: pointer; }
@@ -52,7 +51,6 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
 .game-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1px 2px 14px; }
 .challenge-title { display: flex; align-items: center; gap: 8px; color: #e7d6dc; font-size: 9px; font-weight: 850; letter-spacing: .16em; }
 .tiny-heart { color: var(--rose); font-size: 13px; }
-.challenge-progress { color: var(--faint); font-size: 8px; font-weight: 800; letter-spacing: .1em; text-align: right; }
 .mode-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 4px; border: 1px solid #ffffff0c; border-radius: 13px; background: #140e13a6; }
 .mode-tab { min-width: 0; padding: 10px 4px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #ab96a0; font-size: 12px; font-weight: 750; text-transform: capitalize; cursor: pointer; transition: background .18s, color .18s, border-color .18s; touch-action: manipulation; }
 .mode-tab.active { border-color: #e99eb331; background: linear-gradient(135deg, #80465c, #573344); color: #fff4ed; box-shadow: 0 4px 14px #100a0d55; }
@@ -118,7 +116,6 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
   .game-card { padding: 14px 11px 15px; }
   .game-card-top { padding-bottom: 11px; }
   .challenge-title { font-size: 8px; }
-  .challenge-progress { font-size: 7px; }
   .mode-tab { padding: 9px 2px; font-size: 11px; }
   .board-wrap { min-height: 299px; }
   .board-grid.quartet .board { --tile-size: clamp(21px, 7.3vw, 30px); }
