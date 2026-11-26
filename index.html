@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#180f15">
+  <meta name="description" content="Um jogo de palavras feito com amor, para jogar juntinhos. Uma surpresa nova por dia.">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Palavras de Amor">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+  <title>Palavras de Amor</title>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Palavras de Amor, início">
+      <span class="brand-mark" aria-hidden="true">♥</span>
+      <span class="brand-name">palavras <b>de amor</b></span>
+    </a>
+    <div class="header-tools">
+      <span id="connection" class="connection"><span class="connection-dot"></span><span id="connection-label">PRONTO PRA JOGAR</span></span>
+      <button id="install-button" class="install-button" type="button" hidden>Instalar</button>
+      <button id="help-button" class="help-button" type="button" aria-label="Como jogar">?</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow"><span aria-hidden="true">✦</span> UM DESAFIO FEITO PRA VOCÊ</p>
+      <h1 id="page-title">O amor também<br class="desktop-break"> se soletra.</h1>
+      <p class="intro-copy">Cinco letrinhas, um pouquinho de nós.<br class="mobile-break"> Uma surpresa nova a cada dia.</p>
+      <div class="date-line"><span class="date-flower" aria-hidden="true">✿</span><span id="today-label">HOJE, COM CARINHO</span></div>
+    </section>
+
+    <section class="game-card" aria-label="Jogo Palavras de Amor">
+      <div class="game-card-top">
+        <div class="challenge-title"><span class="tiny-heart" aria-hidden="true">♥</span><span>DESAFIO DE HOJE</span></div>
+        <div id="challenge-progress" class="challenge-progress">UM DIA DE CADA VEZ</div>
+      </div>
+      <nav id="levels" class="mode-tabs" aria-label="Modo de jogo"></nav>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+      <section id="board-wrap" class="board-wrap" aria-label="Tabuleiros do desafio"><div id="boards" class="boards"></div></section>
+      <div id="keyboard" class="keyboard" aria-label="Teclado virtual"></div>
+      <p class="keyboard-hint" id="keyboard-hint">Toque nas letras ou use o teclado do aparelho</p>
+      <section id="love-note" class="love-note" hidden aria-live="polite">
+        <span class="note-icon" aria-hidden="true">♡</span>
+        <div><p class="note-kicker">UM BILHETINHO PRA VOCÊ</p><p id="love-note-text" class="note-text"></p></div>
+      </section>
+      <div id="share-row" class="share-row" hidden><button id="share-button" class="share-button" type="button"><span aria-hidden="true">↗</span> Compartilhar nosso resultado</button></div>
+    </section>
+    <footer class="page-footer"><span aria-hidden="true">♥</span> feito com carinho, só pra você <span aria-hidden="true">♥</span></footer>
+  </main>
+
+  <div id="help-dialog" class="dialog-backdrop" hidden>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <button id="close-help" class="close-help" type="button" aria-label="Fechar">×</button>
+      <p class="dialog-eyebrow">UM JEITINHO DE JOGAR</p>
+      <h2 id="help-title">Como funciona</h2>
+      <p>Descubra a palavra em até seis tentativas. Cada palpite tem cinco letras e vale para todos os tabuleiros abertos da etapa.</p>
+      <div class="example"><b class="correct">A</b><span>Letra certa, no lugar certo.</span></div>
+      <div class="example"><b class="present">M</b><span>Letra certa, em outro lugar.</span></div>
+      <div class="example"><b class="absent">O</b><span>Essa letra não aparece na palavra.</span></div>
+      <p class="dialog-last">Comece pelo Termo. Quando acertar, o Dueto e o Quarteto ficam esperando por você. ♥</p>
+      <button id="got-it" class="got-it" type="button">Entendi, meu bem</button>
+    </section>
+  </div>
+  <noscript><p class="noscript">Este joguinho precisa de JavaScript para funcionar. Ative-o no navegador e tente de novo. ♥</p></noscript>
+</body>
+</html>

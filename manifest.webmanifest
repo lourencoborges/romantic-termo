@@ -1,0 +1,14 @@
+{
+  "id": "/",
+  "name": "Palavras de Amor",
+  "short_name": "Nosso Termo",
+  "description": "Um jogo de palavras feito com amor, para jogar juntinhos.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#180f15",
+  "theme_color": "#180f15",
+  "icons": [{ "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
