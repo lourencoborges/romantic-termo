@@ -1,6 +1,13 @@
 const MAX_GUESSES = 6;
 const STORAGE_PREFIX = "palavras-de-amor:";
 const WORD_CYCLE_KEY = `${STORAGE_PREFIX}word-cycle:v1`;
+const SAO_PAULO_DATE_FORMATTER = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit"
+});
+const SAO_PAULO_CLOCK_FORMATTER = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit",
+  hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+});
 const WORDS = [
   { word: "AMORA", note: "Você deixa qualquer dia mais doce só por existir. Meu amor por você floresce em cada detalhe." },
   { word: "BEIJO", note: "Ainda escolheria o seu beijo no meio de qualquer multidão. E escolheria de novo, todos os dias." },
@@ -115,6 +122,7 @@ const levelsEl = document.querySelector("#levels");
 const modeMenuToggle = document.querySelector("#mode-menu-toggle");
 const modeMenuArrow = document.querySelector("#mode-menu-arrow");
 const boardsEl = document.querySelector("#boards");
+const dailyCountdownEl = document.querySelector("#daily-countdown");
 const messageEl = document.querySelector("#message");
 const keyboardEl = document.querySelector("#keyboard");
 const hintEl = document.querySelector("#keyboard-hint");
@@ -137,11 +145,37 @@ let transitionTimer = 0;
 let transitionForLevel = null;
 
 function todayInSaoPaulo() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit"
-  }).formatToParts(new Date());
+  const parts = SAO_PAULO_DATE_FORMATTER.formatToParts(new Date());
   const part = type => parts.find(item => item.type === type).value;
   return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+function saoPauloWallClockEpoch(date) {
+  const parts = SAO_PAULO_CLOCK_FORMATTER.formatToParts(date);
+  const value = type => Number(parts.find(item => item.type === type).value);
+  return Date.UTC(value("year"), value("month") - 1, value("day"), value("hour"), value("minute"), value("second"));
+}
+
+function nextSaoPauloMidnight(now = new Date()) {
+  const parts = SAO_PAULO_DATE_FORMATTER.formatToParts(now);
+  const value = type => Number(parts.find(item => item.type === type).value);
+  const targetWallTime = Date.UTC(value("year"), value("month") - 1, value("day") + 1);
+  const offsetAt = timestamp => saoPauloWallClockEpoch(new Date(timestamp)) - Math.floor(timestamp / 1000) * 1000;
+  let target = targetWallTime - offsetAt(now.getTime());
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const adjusted = targetWallTime - offsetAt(target);
+    if (adjusted === target) break;
+    target = adjusted;
+  }
+  return target;
+}
+
+function updateDailyCountdown() {
+  const remainingSeconds = Math.max(0, Math.floor((nextSaoPauloMidnight() - Date.now()) / 1000));
+  const hours = String(Math.floor(remainingSeconds / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2, "0");
+  const seconds = String(remainingSeconds % 60).padStart(2, "0");
+  dailyCountdownEl.textContent = `Novo desafio em ${hours}:${minutes}:${seconds}`;
 }
 
 function progressKey(date) { return `${STORAGE_PREFIX}progress:${date}`; }
@@ -637,7 +671,12 @@ installButton.addEventListener("click", async () => {
   installButton.hidden = true;
 });
 window.addEventListener("appinstalled", () => { installButton.hidden = true; });
-document.addEventListener("visibilitychange", () => { if (!document.hidden) newDayIfNeeded(); });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    newDayIfNeeded();
+    updateDailyCountdown();
+  }
+});
 
 function start() {
   const today = todayInSaoPaulo();
@@ -658,6 +697,10 @@ function start() {
   selectedLevel = validPending ? pending : Math.max(0, activeLevel());
   render();
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-  window.setInterval(newDayIfNeeded, 30000);
+  updateDailyCountdown();
+  window.setInterval(() => {
+    newDayIfNeeded();
+    updateDailyCountdown();
+  }, 1000);
 }
 start();
