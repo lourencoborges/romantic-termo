@@ -48,7 +48,7 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
 .name-initial { color: var(--rose-light); font-style: italic; }
 .date-line { display: inline-flex; align-items: center; gap: 8px; color: var(--rose-light); font-size: 9px; font-weight: 800; letter-spacing: .13em; }
 .date-flower { color: var(--rose); font-size: 15px; }
-.game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 1px solid #ebadc11d; border-radius: 22px; background: var(--night); box-shadow: none; }
+.game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .game-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1px 2px 14px; }
 .challenge-title { display: flex; align-items: center; gap: 8px; color: #e7d6dc; font-size: 9px; font-weight: 850; letter-spacing: .16em; }
 .tiny-heart { color: var(--rose); font-size: 13px; }
@@ -115,7 +115,7 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
   .app-shell { width: calc(100% - 24px); }
   .intro { padding: 31px 0 21px; }
   .desktop-break { display: none; }
-  .game-card { border-radius: 18px; padding: 14px 11px 15px; }
+  .game-card { padding: 14px 11px 15px; }
   .game-card-top { padding-bottom: 11px; }
   .challenge-title { font-size: 8px; }
   .challenge-progress { font-size: 7px; }
