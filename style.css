@@ -46,7 +46,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 7vw, 49px); font-weight: 400; line-height: 1.08; letter-spacing: -.045em; }
 .name-initial { color: var(--rose-light); font-style: italic; }
 .date-line { display: inline-flex; align-items: center; gap: 8px; color: var(--rose-light); font-size: 9px; font-weight: 800; letter-spacing: .13em; }
-.date-flower { color: var(--rose); font-size: 15px; }
 .game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .game-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1px 2px 14px; }
 .challenge-title { display: flex; align-items: center; gap: 8px; color: #e7d6dc; font-size: 9px; font-weight: 850; letter-spacing: .16em; }
