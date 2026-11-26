@@ -58,6 +58,8 @@ const hintEl = document.querySelector("#keyboard-hint");
 const progressEl = document.querySelector("#challenge-progress");
 const noteEl = document.querySelector("#love-note");
 const noteTextEl = document.querySelector("#love-note-text");
+const stageTransitionEl = document.querySelector("#stage-transition");
+const nextStageLabelEl = document.querySelector("#next-stage-label");
 const shareRowEl = document.querySelector("#share-row");
 const helpDialog = document.querySelector("#help-dialog");
 const installButton = document.querySelector("#install-button");
@@ -66,6 +68,8 @@ let selectedLevel = 0;
 let draft = "";
 let installPrompt = null;
 let toastTimer = 0;
+let transitionTimer = 0;
+let transitionForLevel = null;
 
 function todayInSaoPaulo() {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -131,6 +135,12 @@ function activeLevel() {
 
 function levelIsDone(level) { return level.answers.every(answer => answer.solved || answer.failed); }
 function allDone() { return game.levels.every(levelIsDone); }
+function waitingForNextStage() {
+  return Number.isInteger(game.pendingStage)
+    && game.pendingStage === selectedLevel
+    && selectedLevel < LEVELS.length - 1
+    && levelIsDone(game.levels[selectedLevel]);
+}
 
 function normaliseWord(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/gi, "").toUpperCase().slice(0, 5);
@@ -198,8 +208,12 @@ function submitGuess() {
     else if (answer.guesses.length >= MAX_GUESSES) answer.failed = true;
   }
   draft = "";
-  const next = activeLevel();
-  selectedLevel = next < 0 ? LEVELS.length - 1 : next;
+  if (levelIsDone(level)) {
+    if (selectedLevel < LEVELS.length - 1 && activeLevel() > selectedLevel) game.pendingStage = selectedLevel;
+    else delete game.pendingStage;
+  } else {
+    delete game.pendingStage;
+  }
   saveGame();
   render();
 }
@@ -275,12 +289,13 @@ function renderKeyboard() {
 function renderTabs() {
   levelsEl.replaceChildren();
   const active = activeLevel();
+  const waiting = waitingForNextStage();
   LEVELS.forEach((level, index) => {
     const tab = document.createElement("button");
     tab.type = "button";
     tab.className = `mode-tab${selectedLevel === index ? " active" : ""}${levelIsDone(game.levels[index]) ? " done" : ""}`;
     tab.textContent = level.label;
-    tab.disabled = index > (active < 0 ? LEVELS.length - 1 : active);
+    tab.disabled = waiting ? index > selectedLevel : index > (active < 0 ? LEVELS.length - 1 : active);
     tab.setAttribute("aria-current", selectedLevel === index ? "page" : "false");
     tab.addEventListener("click", () => { selectedLevel = index; draft = ""; showMessage(""); render(); });
     levelsEl.append(tab);
@@ -288,13 +303,43 @@ function renderTabs() {
 }
 
 function updateNote() {
-  const dailyTarget = game.levels[0].answers[0];
-  if (dailyTarget.solved || dailyTarget.failed) {
-    const entry = WORDS.find(item => item.word === dailyTarget.target);
+  const phase = game.levels[selectedLevel];
+  const revealedAnswer = phase.answers.find(answer => answer.solved)
+    || (levelIsDone(phase) ? phase.answers[0] : null);
+  if (revealedAnswer) {
+    const entry = WORDS.find(item => item.word === revealedAnswer.target);
     noteTextEl.textContent = entry?.note || "Que o seu dia tenha um pouquinho do carinho que você merece.";
     noteEl.hidden = false;
   } else noteEl.hidden = true;
   shareRowEl.hidden = !allDone();
+}
+
+function updateStageTransition() {
+  if (!waitingForNextStage()) {
+    window.clearTimeout(transitionTimer);
+    transitionTimer = 0;
+    transitionForLevel = null;
+    stageTransitionEl.hidden = true;
+    return;
+  }
+
+  nextStageLabelEl.textContent = `Ir para ${LEVELS[selectedLevel + 1].label}`;
+  if (transitionForLevel === selectedLevel) return;
+  transitionForLevel = selectedLevel;
+  stageTransitionEl.hidden = true;
+  window.clearTimeout(transitionTimer);
+  transitionTimer = window.setTimeout(() => {
+    if (waitingForNextStage() && transitionForLevel === selectedLevel) stageTransitionEl.hidden = false;
+  }, 2500);
+}
+
+function advanceStage() {
+  if (!waitingForNextStage()) return;
+  delete game.pendingStage;
+  selectedLevel = activeLevel();
+  draft = "";
+  saveGame();
+  render();
 }
 
 function render() {
@@ -303,10 +348,13 @@ function render() {
   renderKeyboard();
   const active = activeLevel();
   const finishedCount = game.levels.filter(levelIsDone).length;
-  progressEl.textContent = allDone() ? "DESAFIO CONCLUÍDO · ♡" : `ETAPA ${active + 1} DE 3 · ${finishedCount}/3 CONCLUÍDAS`;
+  const displayedLevel = waitingForNextStage() ? selectedLevel : Math.max(0, active);
+  progressEl.textContent = allDone() ? "DESAFIO CONCLUÍDO · ♡" : `ETAPA ${displayedLevel + 1} DE 3 · ${finishedCount}/3 CONCLUÍDAS`;
   if (allDone()) showMessage("Você completou o desafio de hoje. Meu coração comemora com você. ♥");
+  else if (waitingForNextStage()) showMessage("");
   else if (active !== selectedLevel) showMessage("Essa etapa já foi resolvida. Pode rever seus palpites. ♥");
   updateNote();
+  updateStageTransition();
 }
 
 function newDayIfNeeded() {
@@ -355,6 +403,7 @@ document.querySelector("#close-help").addEventListener("click", closeHelp);
 document.querySelector("#got-it").addEventListener("click", closeHelp);
 helpDialog.addEventListener("click", event => { if (event.target === helpDialog) closeHelp(); });
 document.querySelector("#share-button").addEventListener("click", shareResult);
+document.querySelector("#next-stage-button").addEventListener("click", advanceStage);
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   installPrompt = event;
@@ -373,7 +422,12 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) newD
 function start() {
   const today = todayInSaoPaulo();
   game = readSavedGame(today) || createGame(today);
-  selectedLevel = Math.max(0, activeLevel());
+  const pending = game.pendingStage;
+  const validPending = Number.isInteger(pending)
+    && pending >= 0
+    && pending < LEVELS.length - 1
+    && levelIsDone(game.levels[pending]);
+  selectedLevel = validPending ? pending : Math.max(0, activeLevel());
   document.querySelector("#today-label").textContent = new Intl.DateTimeFormat("pt-BR", {
     timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long"
   }).format(new Date()).toLocaleUpperCase("pt-BR");

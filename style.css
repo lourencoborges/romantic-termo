@@ -51,6 +51,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .app-shell { width: min(100% - 32px, 540px); margin: 0 auto; }
 .intro { padding: 38px 0 26px; text-align: center; }
 h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 7vw, 49px); font-weight: 400; line-height: 1.08; letter-spacing: -.045em; }
+.name-initial { color: var(--rose-light); font-style: italic; }
 .date-line { display: inline-flex; align-items: center; gap: 8px; color: var(--rose-light); font-size: 9px; font-weight: 800; letter-spacing: .13em; }
 .date-flower { color: var(--rose); font-size: 15px; }
 .game-card { padding: 17px clamp(13px, 4vw, 24px) 18px; border: 1px solid #ebadc11d; border-radius: 22px; background: linear-gradient(150deg, #2a1b25f2, #21151dea); box-shadow: 0 18px 55px #09060a66, inset 0 1px #ffffff08; }
@@ -136,3 +137,8 @@ h1 { margin: 0; color: var(--cream); font-family: Georgia, "Times New Roman", se
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+.stage-transition { display: flex; justify-content: flex-end; margin-top: 12px; animation: note-in .35s ease-out both; }
+.next-stage-button { display: inline-flex; min-height: 43px; align-items: center; justify-content: center; gap: 13px; padding: 9px 15px; border: 1px solid #e7a4b7a6; border-radius: 12px; background: linear-gradient(120deg, #b35f7a, #82435e); color: #fff5f1; font-size: 11px; font-weight: 800; letter-spacing: .025em; cursor: pointer; box-shadow: 0 5px 16px #100a0d55; touch-action: manipulation; }
+.next-stage-button:active { transform: translateY(1px); }
+.next-stage-arrow { color: #ffe1e7; font-size: 20px; line-height: 1; }
