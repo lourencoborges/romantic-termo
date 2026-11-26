@@ -59,7 +59,6 @@ const progressEl = document.querySelector("#challenge-progress");
 const noteEl = document.querySelector("#love-note");
 const noteTextEl = document.querySelector("#love-note-text");
 const shareRowEl = document.querySelector("#share-row");
-const connectionEl = document.querySelector("#connection");
 const connectionLabelEl = document.querySelector("#connection-label");
 const helpDialog = document.querySelector("#help-dialog");
 const installButton = document.querySelector("#install-button");
@@ -316,7 +315,6 @@ function newDayIfNeeded() {
 
 function updateConnection() {
   const online = navigator.onLine;
-  connectionEl.classList.toggle("offline", !online);
   connectionLabelEl.textContent = online ? "PRONTO PRA JOGAR" : "JOGANDO OFFLINE";
 }
 
