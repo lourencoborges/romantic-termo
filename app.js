@@ -113,6 +113,7 @@ const LEVELS = [
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 const levelsEl = document.querySelector("#levels");
 const modeMenuToggle = document.querySelector("#mode-menu-toggle");
+const modeMenuArrow = document.querySelector("#mode-menu-arrow");
 const boardsEl = document.querySelector("#boards");
 const messageEl = document.querySelector("#message");
 const keyboardEl = document.querySelector("#keyboard");
@@ -315,6 +316,8 @@ function setModesMenuOpen(open) {
   levelsEl.classList.toggle("open", open);
   levelsEl.setAttribute("aria-hidden", String(!open));
   modeMenuToggle.setAttribute("aria-expanded", String(open));
+  modeMenuToggle.setAttribute("aria-label", open ? "Fechar modos de jogo" : "Abrir modos de jogo");
+  modeMenuArrow.textContent = open ? "↑" : "↓";
 }
 
 function nextEmptyPosition(from) {
