@@ -127,6 +127,7 @@ const messageEl = document.querySelector("#message");
 const keyboardEl = document.querySelector("#keyboard");
 const hintEl = document.querySelector("#keyboard-hint");
 const noteEl = document.querySelector("#love-note");
+const noteKickerEl = document.querySelector("#love-note .note-kicker");
 const noteTextEl = document.querySelector("#love-note-text");
 const stageTransitionEl = document.querySelector("#stage-transition");
 const nextStageLabelEl = document.querySelector("#next-stage-label");
@@ -551,13 +552,18 @@ function renderTabs() {
 
 function updateNote() {
   const phase = game.levels[selectedLevel];
-  const revealedAnswer = phase.answers.find(answer => answer.solved)
+  const revealedAnswer = phase.answers.find(answer => answer.failed)
+    || phase.answers.find(answer => answer.solved)
     || (levelIsDone(phase) ? phase.answers[0] : null);
   if (revealedAnswer) {
     const entry = WORDS.find(item => item.word === revealedAnswer.target);
+    noteKickerEl.textContent = revealedAnswer.failed ? "NÃO FOI DESSA VEZ, AMOR" : "UM BILHETINHO PRA VOCÊ";
     noteTextEl.textContent = entry?.note || "Que o seu dia tenha um pouquinho do carinho que você merece.";
     noteEl.hidden = false;
-  } else noteEl.hidden = true;
+  } else {
+    noteKickerEl.textContent = "UM BILHETINHO PRA VOCÊ";
+    noteEl.hidden = true;
+  }
   shareRowEl.hidden = !allDone();
 }
 
