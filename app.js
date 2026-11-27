@@ -284,6 +284,14 @@ function saveGame() {
   catch (_) { /* O jogo continua nesta sessão se o navegador bloquear o armazenamento. */ }
 }
 
+function logDailyAnswers() {
+  console.info(`[Palavras de Amor] Respostas de ${game.date}:`, {
+    Termo: game.levels[0].answers.map(answer => answer.target),
+    Dueto: game.levels[1].answers.map(answer => answer.target),
+    Quarteto: game.levels[2].answers.map(answer => answer.target)
+  });
+}
+
 function createGame(date) {
   const solved = new Set(wordCycle.solved);
   let available = wordCycle.order.filter(word => !solved.has(word));
@@ -606,6 +614,7 @@ function advanceStage() {
   cursorPosition = 0;
   positionSelectedByUser = false;
   saveGame();
+  logDailyAnswers();
   render();
 }
 
@@ -706,6 +715,7 @@ function start() {
   }
   saveWordCycle();
   saveGame();
+  logDailyAnswers();
   const pending = game.pendingStage;
   const validPending = Number.isInteger(pending)
     && pending >= 0
