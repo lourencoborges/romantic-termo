@@ -232,15 +232,14 @@ function readWordCycle() {
     if (!raw) return migrateWordCycle();
     const value = JSON.parse(raw);
     const validWords = new Set(WORDS.map(({ word }) => word));
-    const validOrder = Array.isArray(value?.order)
-      && value.order.length === WORDS.length
-      && new Set(value.order).size === WORDS.length
-      && value.order.every(word => validWords.has(word));
-    if (!validOrder || !Array.isArray(value.solved)) return migrateWordCycle();
+    if (!Array.isArray(value?.order) || !Array.isArray(value.solved)) return migrateWordCycle();
+    const order = [...new Set(value.order.filter(word => validWords.has(word)))];
+    const solved = [...new Set(value.solved.filter(word => validWords.has(word) && order.includes(word)))];
+    const missing = WORDS.map(({ word }) => word).filter(word => !order.includes(word));
     return {
       id: typeof value.id === "string" ? value.id : newWordCycleId(),
-      order: value.order,
-      solved: [...new Set(value.solved.filter(word => validWords.has(word)))]
+      order: [...order, ...missing],
+      solved
     };
   } catch (_) { return migrateWordCycle(); }
 }
@@ -251,7 +250,7 @@ function saveWordCycle() {
 }
 
 function markWordSolved(word) {
-  if (game.cycleId !== wordCycle.id) return;
+  if (game.cycleId !== wordCycle.id || !wordCycle.order.includes(word)) return;
   if (!wordCycle.solved.includes(word)) wordCycle.solved.push(word);
   if (wordCycle.solved.length === WORDS.length) wordCycle = createWordCycle();
   saveWordCycle();
@@ -267,7 +266,7 @@ function readSavedGame(date) {
       && value.levels.length === LEVELS.length
       && value.levels.every((level, index) => Array.isArray(level.answers)
         && level.answers.length <= LEVELS[index].count
-        && level.answers.every(answer => WORDS.some(item => item.word === answer.target)
+        && level.answers.every(answer => /^[A-Z]{5}$/.test(answer.target)
           && Array.isArray(answer.guesses)
           && answer.guesses.length <= MAX_GUESSES
           && typeof answer.solved === "boolean"
