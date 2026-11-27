@@ -128,6 +128,7 @@ const keyboardEl = document.querySelector("#keyboard");
 const hintEl = document.querySelector("#keyboard-hint");
 const noteEl = document.querySelector("#love-note");
 const noteKickerEl = document.querySelector("#love-note .note-kicker");
+const noteLabelEl = document.querySelector("#love-note-label");
 const noteTextEl = document.querySelector("#love-note-text");
 const stageTransitionEl = document.querySelector("#stage-transition");
 const nextStageLabelEl = document.querySelector("#next-stage-label");
@@ -500,7 +501,7 @@ function renderBoards() {
     if (answer.solved || answer.failed) {
       const result = document.createElement("p");
       result.className = "answer-result";
-      result.textContent = answer.solved ? "ACERTOU · ♡" : `Palavra certa: ${answer.target}`;
+      result.textContent = answer.solved ? "ACERTOU · ♡" : "NÃO FOI DESSA VEZ, AMOR";
       card.append(result);
     }
     grid.append(card);
@@ -568,11 +569,14 @@ function updateNote() {
     || (levelIsDone(phase) ? phase.answers[0] : null);
   if (revealedAnswer) {
     const entry = WORDS.find(item => item.word === revealedAnswer.target);
-    noteKickerEl.textContent = revealedAnswer.failed ? "NÃO FOI DESSA VEZ, AMOR" : "UM BILHETINHO PRA VOCÊ";
+    noteKickerEl.textContent = revealedAnswer.failed ? `PALAVRA CERTA: ${revealedAnswer.target}` : "";
+    noteKickerEl.hidden = !revealedAnswer.failed;
+    noteLabelEl.textContent = "BILHETE:";
     noteTextEl.textContent = entry?.note || "Que o seu dia tenha um pouquinho do carinho que você merece.";
     noteEl.hidden = false;
   } else {
-    noteKickerEl.textContent = "UM BILHETINHO PRA VOCÊ";
+    noteKickerEl.textContent = "";
+    noteKickerEl.hidden = true;
     noteEl.hidden = true;
   }
   shareRowEl.hidden = !allDone();

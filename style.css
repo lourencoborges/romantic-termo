@@ -88,6 +88,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 #love-note { display: block; width: 100%; margin: 18px 0 0; padding: 0 !important; background: var(--night) !important; color: #f3e1e5; text-align: center; animation: note-in .35s ease-out both; }
 #love-note > div { padding: 0; background: var(--night) !important; }
 .note-kicker { margin: 1px 0 5px; color: inherit; font-size: 8px; font-weight: 850; letter-spacing: .15em; }
+.note-label { margin: 1px 0 5px; color: inherit; font-size: 8px; font-weight: 850; letter-spacing: .15em; }
 .note-text { margin: 0; color: inherit; font-family: Georgia, "Times New Roman", serif; font-size: 13px; line-height: 1.55; }
 .share-row { margin-top: 12px; text-align: center; }
 .share-button { padding: 9px 14px; border: 1px solid #9f7483; border-radius: 99px; background: #4a303d; color: #fbe8ed; font-size: 10px; font-weight: 750; cursor: pointer; touch-action: manipulation; }
