@@ -1,6 +1,5 @@
 const MAX_GUESSES = 6;
 const STORAGE_PREFIX = "palavras-de-amor:";
-const WORD_CYCLE_KEY = `${STORAGE_PREFIX}word-cycle:v1`;
 const SAO_PAULO_DATE_FORMATTER = new Intl.DateTimeFormat("en-CA", {
   timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit"
 });
@@ -130,12 +129,9 @@ const noteEl = document.querySelector("#love-note");
 const noteKickerEl = document.querySelector("#love-note .note-kicker");
 const noteLabelEl = document.querySelector("#love-note-label");
 const noteTextEl = document.querySelector("#love-note-text");
-const stageTransitionEl = document.querySelector("#stage-transition");
-const nextStageLabelEl = document.querySelector("#next-stage-label");
 const shareRowEl = document.querySelector("#share-row");
 const installButton = document.querySelector("#install-button");
 let game;
-let wordCycle;
 let selectedLevel = 0;
 let modesMenuOpen = false;
 let draft = Array(5).fill("");
@@ -143,8 +139,6 @@ let cursorPosition = 0;
 let positionSelectedByUser = false;
 let installPrompt = null;
 let toastTimer = 0;
-let transitionTimer = 0;
-let transitionForLevel = null;
 
 function todayInSaoPaulo() {
   const parts = SAO_PAULO_DATE_FORMATTER.formatToParts(new Date());
@@ -181,80 +175,34 @@ function updateDailyCountdown() {
 }
 
 function progressKey(date) { return `${STORAGE_PREFIX}progress:${date}`; }
-function newWordCycleId() {
-  return globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+
+function seededRandom(seed) {
+  let state = seed >>> 0;
+  return () => {
+    state += 0x6D2B79F5;
+    let value = state;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-function createWordCycle() {
+function dailyWords(date) {
+  const dayNumber = Math.floor((Date.parse(`${date}T00:00:00Z`) - Date.parse("2026-11-26T00:00:00Z")) / 86400000);
+  const wordsPerDay = LEVELS.reduce((total, level) => total + level.count, 0);
+  const daysPerCycle = Math.ceil(WORDS.length / wordsPerDay);
+  const cycle = Math.floor(dayNumber / daysPerCycle);
+  const dayInCycle = ((dayNumber % daysPerCycle) + daysPerCycle) % daysPerCycle;
   const order = WORDS.map(({ word }) => word);
+  const random = seededRandom(cycle);
   for (let index = order.length - 1; index > 0; index--) {
-    const other = Math.floor(Math.random() * (index + 1));
+    const other = Math.floor(random() * (index + 1));
     [order[index], order[other]] = [order[other], order[index]];
   }
-  return { id: newWordCycleId(), order, solved: [] };
-}
-
-function migrateWordCycle() {
-  const cycle = createWordCycle();
-  const validWords = new Set(WORDS.map(({ word }) => word));
-  const completed = new Set();
-  const pending = new Set();
-  let progressKeys = [];
-  try {
-    progressKeys = Object.keys(localStorage)
-      .filter(key => key.startsWith(`${STORAGE_PREFIX}progress:`))
-      .sort()
-      .reverse();
-  } catch (_) { /* Começa um ciclo novo se o navegador bloquear o armazenamento. */ }
-
-  for (const key of progressKeys) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(key));
-      for (const answer of (saved?.levels || []).flatMap(level => level.answers || [])) {
-        if (!validWords.has(answer.target)) continue;
-        if (answer.solved) completed.add(answer.target);
-        else if (!completed.has(answer.target)) pending.add(answer.target);
-      }
-    } catch (_) { /* Ignora partidas antigas inválidas. */ }
-  }
-
-  cycle.solved = [...completed];
-  cycle.order = [
-    ...[...pending].filter(word => !completed.has(word)),
-    ...cycle.order.filter(word => !completed.has(word) && !pending.has(word)),
-    ...cycle.order.filter(word => completed.has(word))
-  ];
-  return cycle.solved.length === WORDS.length ? createWordCycle() : cycle;
-}
-
-function readWordCycle() {
-  try {
-    const raw = localStorage.getItem(WORD_CYCLE_KEY);
-    if (!raw) return migrateWordCycle();
-    const value = JSON.parse(raw);
-    const validWords = new Set(WORDS.map(({ word }) => word));
-    if (!Array.isArray(value?.order) || !Array.isArray(value.solved)) return migrateWordCycle();
-    const order = [...new Set(value.order.filter(word => validWords.has(word)))];
-    const solved = [...new Set(value.solved.filter(word => validWords.has(word) && order.includes(word)))];
-    const missing = WORDS.map(({ word }) => word).filter(word => !order.includes(word));
-    return {
-      id: typeof value.id === "string" ? value.id : newWordCycleId(),
-      order: [...order, ...missing],
-      solved
-    };
-  } catch (_) { return migrateWordCycle(); }
-}
-
-function saveWordCycle() {
-  try { localStorage.setItem(WORD_CYCLE_KEY, JSON.stringify(wordCycle)); }
-  catch (_) { /* O jogo continua nesta sessão se o navegador bloquear o armazenamento. */ }
-}
-
-function markWordSolved(word) {
-  if (game.cycleId !== wordCycle.id || !wordCycle.order.includes(word)) return;
-  if (!wordCycle.solved.includes(word)) wordCycle.solved.push(word);
-  if (wordCycle.solved.length === WORDS.length) wordCycle = createWordCycle();
-  saveWordCycle();
+  return {
+    cycleId: `calendar-cycle-${cycle}`,
+    words: order.slice(dayInCycle * wordsPerDay, (dayInCycle + 1) * wordsPerDay)
+  };
 }
 
 function readSavedGame(date) {
@@ -276,7 +224,10 @@ function readSavedGame(date) {
             && Array.isArray(guess.feedback)
             && guess.feedback.length === 5
             && guess.feedback.every(mark => ["correct", "present", "absent"].includes(mark)))));
-    return valid ? value : null;
+    if (!valid) return null;
+    const expected = createGame(date).levels.map(level => level.answers.map(answer => answer.target));
+    const savedTargets = value.levels.map(level => level.answers.map(answer => answer.target));
+    return JSON.stringify(savedTargets) === JSON.stringify(expected) ? value : null;
   } catch (_) { return null; }
 }
 
@@ -294,21 +245,15 @@ function logDailyAnswers() {
 }
 
 function createGame(date) {
-  const solved = new Set(wordCycle.solved);
-  let available = wordCycle.order.filter(word => !solved.has(word));
-  if (!available.length) {
-    wordCycle = createWordCycle();
-    saveWordCycle();
-    available = wordCycle.order;
-  }
+  const { cycleId, words } = dailyWords(date);
   let cursor = 0;
   const levels = LEVELS.map(level => ({
-    answers: Array.from({ length: Math.min(level.count, Math.max(0, available.length - cursor)) }, () => {
-      const target = available[cursor++];
+    answers: Array.from({ length: Math.min(level.count, Math.max(0, words.length - cursor)) }, () => {
+      const target = words[cursor++];
       return { target, guesses: [], solved: false, failed: false };
     })
   }));
-  return { date, cycleId: wordCycle.id, levels };
+  return { date, cycleId, levels };
 }
 
 function activeLevel() {
@@ -433,7 +378,6 @@ function submitGuess() {
     answer.guesses.push({ word, feedback });
     if (word === answer.target && !answer.solved) {
       answer.solved = true;
-      markWordSolved(answer.target);
     }
     else if (answer.guesses.length >= MAX_GUESSES) answer.failed = true;
   }
@@ -582,46 +526,6 @@ function updateNote() {
   shareRowEl.hidden = !allDone();
 }
 
-function updateStageTransition() {
-  if (!waitingForNextStage()) {
-    window.clearTimeout(transitionTimer);
-    transitionTimer = 0;
-    transitionForLevel = null;
-    stageTransitionEl.hidden = true;
-    return;
-  }
-
-  if (selectedLevel === 0) {
-    window.clearTimeout(transitionTimer);
-    transitionTimer = 0;
-    transitionForLevel = null;
-    stageTransitionEl.hidden = true;
-    return;
-  }
-
-  nextStageLabelEl.textContent = `Ir para ${LEVELS[activeLevel()].label}`;
-  if (transitionForLevel === selectedLevel) return;
-  transitionForLevel = selectedLevel;
-  stageTransitionEl.hidden = true;
-  window.clearTimeout(transitionTimer);
-  transitionTimer = window.setTimeout(() => {
-    if (waitingForNextStage() && transitionForLevel === selectedLevel) stageTransitionEl.hidden = false;
-  }, 2500);
-}
-
-function advanceStage() {
-  if (!waitingForNextStage()) return;
-  setModesMenuOpen(false);
-  delete game.pendingStage;
-  selectedLevel = activeLevel();
-  draft = Array(5).fill("");
-  cursorPosition = 0;
-  positionSelectedByUser = false;
-  saveGame();
-  logDailyAnswers();
-  render();
-}
-
 function render() {
   renderTabs();
   renderBoards();
@@ -631,7 +535,6 @@ function render() {
   else if (waitingForNextStage()) showMessage("");
   else if (active !== selectedLevel) showMessage("Essa etapa já foi resolvida. Pode rever seus palpites. ♥");
   updateNote();
-  updateStageTransition();
 }
 
 function newDayIfNeeded() {
@@ -687,7 +590,6 @@ document.addEventListener("click", event => {
 });
 document.querySelector("#share-button").addEventListener("click", shareResult);
 document.querySelector("#reset-game-button").addEventListener("click", resetTodaysProgress);
-document.querySelector("#next-stage-button").addEventListener("click", advanceStage);
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   installPrompt = event;
@@ -710,14 +612,7 @@ document.addEventListener("visibilitychange", () => {
 
 function start() {
   const today = todayInSaoPaulo();
-  wordCycle = readWordCycle();
   game = readSavedGame(today) || createGame(today);
-  if (!game.cycleId) game.cycleId = wordCycle.id;
-  if (game.cycleId === wordCycle.id) {
-    game.levels.flatMap(level => level.answers).filter(answer => answer.solved)
-      .forEach(answer => { if (!wordCycle.solved.includes(answer.target)) wordCycle.solved.push(answer.target); });
-  }
-  saveWordCycle();
   saveGame();
   logDailyAnswers();
   const pending = game.pendingStage;
