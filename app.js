@@ -440,6 +440,7 @@ function submitGuess() {
   }
   saveGame();
   render();
+  if (selectedLevel === 0 && waitingForNextStage()) setModesMenuOpen(true);
 }
 
 function makeRows(answer, isCurrent) {
@@ -535,15 +536,18 @@ function renderTabs() {
     tab.className = `mode-tab${selectedLevel === index ? " active" : ""}${levelIsDone(game.levels[index]) ? " done" : ""}`;
     tab.textContent = level.label.toLowerCase();
     tab.disabled = game.levels[index].answers.length === 0
-      || (waiting ? index > selectedLevel : index > (active < 0 ? LEVELS.length - 1 : active));
+      || (waiting ? index > active : index > (active < 0 ? LEVELS.length - 1 : active));
     tab.setAttribute("aria-current", selectedLevel === index ? "page" : "false");
     tab.addEventListener("click", () => {
+      const advancing = waitingForNextStage() && index === activeLevel();
+      if (advancing) delete game.pendingStage;
       selectedLevel = index;
       setModesMenuOpen(false);
       draft = Array(5).fill("");
       cursorPosition = 0;
       positionSelectedByUser = false;
       showMessage("");
+      if (advancing) saveGame();
       render();
     });
     levelsEl.append(tab);
@@ -569,6 +573,14 @@ function updateNote() {
 
 function updateStageTransition() {
   if (!waitingForNextStage()) {
+    window.clearTimeout(transitionTimer);
+    transitionTimer = 0;
+    transitionForLevel = null;
+    stageTransitionEl.hidden = true;
+    return;
+  }
+
+  if (selectedLevel === 0) {
     window.clearTimeout(transitionTimer);
     transitionTimer = 0;
     transitionForLevel = null;
@@ -702,6 +714,7 @@ function start() {
     && levelIsDone(game.levels[pending]);
   selectedLevel = validPending ? pending : Math.max(0, activeLevel());
   render();
+  if (selectedLevel === 0 && waitingForNextStage()) setModesMenuOpen(true);
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js").catch(() => {});
   updateDailyCountdown();
   window.setInterval(() => {
