@@ -64,6 +64,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .answer-label { margin: 0 0 5px; color: #ac929e; font-size: 8px; font-weight: 800; letter-spacing: .11em; }
 .board { --tile-size: clamp(44px, 12.8vw, 56px); --tile-gap: 5px; display: grid; gap: var(--tile-gap); width: max-content; margin: 0 auto; }
 .board-grid.duet .board { --tile-gap: 3px; width: 100%; max-width: 212px; }
+.board-grid.duet .answer-card { width: 100%; }
 .board-grid.duet .board-row { width: 100%; grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .board-grid.duet .tile { width: 100%; height: auto; aspect-ratio: 1; }
 .board-grid.quartet .board { --tile-size: clamp(22px, 7.3vw, 34px); --tile-gap: 2px; }
