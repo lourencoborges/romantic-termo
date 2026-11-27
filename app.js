@@ -500,7 +500,7 @@ function renderBoards() {
     if (answer.solved || answer.failed) {
       const result = document.createElement("p");
       result.className = "answer-result";
-      result.textContent = answer.solved ? "ACERTOU · ♡" : answer.target;
+      result.textContent = answer.solved ? "ACERTOU · ♡" : `Palavra certa: ${answer.target}`;
       card.append(result);
     }
     grid.append(card);

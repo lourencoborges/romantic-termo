@@ -76,8 +76,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-
 .tile.correct, .key.correct { border-color: var(--green); background: var(--green); color: #fff; }
 .tile.present, .key.present { border-color: var(--yellow); background: var(--yellow); color: #fff; }
 .tile.absent, .key.absent { border-color: var(--gray); background: var(--gray); color: #c9b9c1; }
-.answer-result { min-height: 17px; margin: 4px 0 0; color: #b9dec9; font-size: 8px; font-weight: 800; letter-spacing: .08em; }
-.board-grid.quartet .answer-result { font-size: 7px; }
+.answer-result { min-height: 17px; margin: 4px 0 0; color: #b9dec9; font-size: 10px; font-weight: 800; letter-spacing: .04em; }
+.board-grid.quartet .answer-result { font-size: 8px; }
 .keyboard { display: flex; flex-direction: column; gap: 6px; width: min(100%, 460px); margin: 18px auto 0; touch-action: manipulation; }
 .key-row { display: flex; justify-content: center; gap: clamp(3px, 1vw, 5px); }
 .key { flex: 1 1 0; min-width: 0; max-width: 43px; height: clamp(42px, 6.3vh, 49px); padding: 0 2px; border: 1px solid #ffffff0b; border-radius: 7px; background: #47313f; color: var(--cream); font-size: clamp(14px, 4.3vw, 17px); font-weight: 750; cursor: pointer; box-shadow: 0 2px 0 #100a0f; touch-action: manipulation; }
